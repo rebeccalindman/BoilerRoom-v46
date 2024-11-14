@@ -1,4 +1,5 @@
 let storedNotesArr = [];
+let editingNoteID = null;
 
 function getTitle() {
     return document.getElementById("title").value;
@@ -7,6 +8,7 @@ function getTitle() {
 function getContent() {
     return document.getElementById("content").value;
 }
+
 function generateUniqueID() {
     let uniqueID = Math.random().toString(36).substring(2, 9);
     while (checkUniqueID(uniqueID)) {
@@ -15,7 +17,6 @@ function generateUniqueID() {
     return uniqueID;
 }
 
-//compare to stored IDs
 function checkUniqueID(uniqueID) {
     return localStorage.getItem(uniqueID);
 }
@@ -26,81 +27,145 @@ function addNote() {
     const uniqueID = generateUniqueID();
     const dateAndTime = new Date().toLocaleString();
     const note = { title, content, uniqueID, dateAndTime };
+
+    storedNotesArr.push(note);
     localStorage.setItem(uniqueID, JSON.stringify(note));
+
     return note;
 }
 
+function fetchNoteByID(uniqueID) {
+    let note = storedNotesArr.find(item => item.uniqueID === uniqueID);
 
-    /**
-     * Calls addNote and adds the returned note object to the storedNotesArr array
-     * @returns {Object} note object
-     */
-function storeNote() {
-    const newNote = addNote(); // calls addNote
-    storedNotesArr.push(newNote); //stores the returned object in an array
-    console.log("pushed new note to array");
-    
-    
-    return newNote;
-    
+    if (note) {
+        document.getElementById("title").value = note.title;
+        document.getElementById("content").value = note.content;
+        document.getElementById("noteID").innerText = note.uniqueID;
+        document.getElementById("date").innerText = note.dateAndTime;
 
+        editingNoteID = uniqueID;
+    } else {
+        console.log("Note not found!");
+    }
 }
 
-function getNote(params) {
-    
+function editNote() {
+    const title = getTitle();
+    const content = getContent();
+    const dateAndTime = new Date().toLocaleString();
+
+    const note = storedNotesArr.find(item => item.uniqueID === editingNoteID);
+    if (note) {
+        note.title = title;
+        note.content = content;
+        note.dateAndTime = dateAndTime;
+
+        localStorage.setItem(editingNoteID, JSON.stringify(note));
+    } else {
+        console.log("Note not found for editing!");
+    }
+
+    return note;
 }
 
-function addNoteToMenu () {
+function addNoteToMenu() {
     const list = document.getElementById("listOfStoredNotes");
-    const menuListItem = document.createElement("li");
+    list.innerHTML = '';
 
     storedNotesArr.forEach(note => {
-        const title = document.createElement("h4");
-        title.innerText = note.title;
+        const menuListItem = document.createElement("li");
 
+        const title = document.createElement("h4");
+        title.innerText = note.title.substring(0, 20);
+        if (note.title == "") {
+            title.innerText = "New Note" + " " + note.dateAndTime;
+        }
+
+        const date = document.createElement("p");
+        date.style.fontSize = "0.8rem";
+        date.style.fontStyle = "italic";
+        date.innerText = note.dateAndTime;
 
         const preview = document.createElement("p");
-        preview.innerText = note.content;
+        preview.innerText = note.content.substring(0, 40);
+        if (note.content.length > 40) {
+            preview.innerText = note.content.substring(0, 40) + "...";
+        }
 
-        title.substring(0, 20);
-        preview.substring(0, 40);
-
-        // append to menu list
         menuListItem.appendChild(title);
+        menuListItem.appendChild(date);
         menuListItem.appendChild(preview);
+
+        menuListItem.addEventListener("click", () => {
+            fetchNoteByID(note.uniqueID);
+        });
+
         list.appendChild(menuListItem);
-        
     });
-
-
-
-    
-
-
-    
 }
 
 function displayNote() {
-
+    // Function to display a full note
 }
 
-//event listener for submit
-const submitForm = document.getElementById("form");
-submitForm.addEventListener("submit", function (event){
+function saveCurrentNote(event) {
     event.preventDefault();
-    const storedNote = storeNote();
+
+    let storedNote;
+
+    if (editingNoteID) {
+        // Edit the existing note
+        storedNote = editNote();
+    } else {
+        // Create a new note
+        storedNote = addNote();
+        editingNoteID = storedNote.uniqueID;
+    }
+
+    // Update the date and ID display
+    document.getElementById("date").innerText = storedNote.dateAndTime;
+    document.getElementById("noteID").innerText = storedNote.uniqueID;
+
+    // Refresh the notes list
+    addNoteToMenu();
+
+    console.log("Stored note:", storedNote);
+ 
+}
+
+function createNewNote() {
+    editingNoteID = null;
+
+    document.getElementById("title").value = "";
+    document.getElementById("content").value = "";
+    document.getElementById("date").innerText = "";
+    document.getElementById("noteID").innerText = "";
+
+    console.log("Created a new note.");
     
-    // update time
-    const date = document.getElementById("date");
-    date.innerText = storedNote.dateAndTime;
+}
+/* function createNewNote() {
+    editingNoteID = null;
+    const newNote = addNote();
+    fetchNoteByID(newNote.uniqueID);
+    addNoteToMenu();
+    
+} */
+
+// Event listeners
+
+// Create a new note
+const saveNote = document.getElementById("form");
+saveNote.addEventListener("submit", saveCurrentNote);
+
+const newNote = document.getElementById("form");
+newNote.addEventListener("reset", function (event) {
+    event.preventDefault();
+
+    createNewNote();
 
 
-    //update id
-    const noteID = document.getElementById("noteID");
-    noteID.innerText = storedNote.uniqueID;
 
-    console.log("storedNote: ", storedNote);
-    console.log("storedNotesArr: ", storedNotesArr);
-    
-    
 });
+
+
