@@ -19,9 +19,21 @@
     </aside>
     <main>
         Main
-        <section>
-            First section
-        </section>
+        <form action="" id="form">
+            <section id="title">
+                <!-- <label for="title" placeholder="Title" aria-placeholder="Title">Title: </label> -->
+                <input type="text" name="title" id="title" placeholder="Title">
+            </section>
+            <section id="date">
+                <label for="date">Date:</label>
+                <!-- todo add date -->
+            </section>
+            <section id="content">
+                <label for="content">Content:</label>
+                <textarea name="content" id="content" cols="30" rows="10"></textarea>
+            </section>
+            <button type="submit">Save</button>
+        </form>
     </main>
     <footer>
         footer

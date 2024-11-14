@@ -3,6 +3,7 @@
     padding: 0;
     font-family: monospace;
     background-color: #f2f2f2;
+    box-sizing: border-box;
 }
 
 /* grid */ 
@@ -22,6 +23,10 @@ header {
     padding: 1.5rem;
 }
 
+h1 {
+    width: fit-content;
+}
+
 /* main */ /* Mobile first approach */
 
 main {
@@ -32,9 +37,36 @@ main {
     align-items: center;
 }
 
+form {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+}
+
+form section {
+    width: 100%;
+    margin: 1rem;
+}
+
+form section label {
+    display: block;
+    margin-bottom: 0.5rem;
+}
+
+form section input,
+form section textarea {
+    width: 100%;
+    padding: 0.5rem;
+    border: 1px solid #ccc;
+    border-radius: 0.5rem;
+}
+
 /* aside */
 aside{
     grid-area: aside;
+    width: clamp(200px, 20%, 400px);
     background-color: bisque;
 
 }
