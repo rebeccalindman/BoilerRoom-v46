@@ -4,31 +4,45 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Anteckningar</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Barrio&display=swap" rel="stylesheet"> 
+
+    <!-- <link rel="shortcut icon" href="favicon.ico" type="image/x-icon"> --> <!-- todo add favicon -->
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <header>
-        <h1>Anteckningar</h1>
+        <h1>NoteNest</h1>
     </header>
     <nav>
         nav
     </nav>
     <aside id="menu">
         aside #menu
+        <ul id="listOfStoredNotes">
+
+        </ul>
 
     </aside>
     <main>
         Main
         <form action="" id="form">
-            <section id="title">
+            <section id="titleSection">
                 <!-- <label for="title" placeholder="Title" aria-placeholder="Title">Title: </label> -->
                 <input type="text" name="title" id="title" placeholder="Title">
             </section>
-            <section id="date">
-                <label for="date">Date:</label>
-                <!-- todo add date -->
+            <section class="oneLine" id="uniqueIDSection">
+                <p>Unique ID:</p>
+                <p id="noteID">Unique ID placeholder</p> <!-- todo add unique ID -->
             </section>
-            <section id="content">
+            <section class="oneLine" id="dateSection">
+                <p>Date:</p>
+                <p id="date">Date placeholder</p><!-- todo add date -->
+            </section>
+            <section id="contentSection">
                 <label for="content">Content:</label>
                 <textarea name="content" id="content" cols="30" rows="10"></textarea>
             </section>
