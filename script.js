@@ -21,9 +21,14 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     // New Note Button Logic
-    newNoteButton.addEventListener("click", function () {
-        firstClickConfirmation(newNoteButton, "You have unsaved changes!", createNewNote);
-    });
+        // New Note Button Logic
+        newNoteButton.addEventListener("click", function () {
+            if (checkForEdits()) {
+                firstClickConfirmation(newNoteButton, "You have unsaved changes!", createNewNote);
+            } else {
+                createNewNote();
+            }
+        });
 
     // Delete Button Logic
     deleteButton.addEventListener("click", function () {
@@ -95,6 +100,28 @@ function loadNotes() {
     storedNotesArr.forEach(note => addNoteToMenu(note));
 }
 
+function checkForEdits() { // checks if the content or title has been changed since last save
+    if (editingNoteID) {
+        //get note object from array
+        const noteBeingEdited = storedNotesArr.find(item => item.uniqueID === editingNoteID);
+        const storedTitle = noteBeingEdited.title;
+        const storedContent = noteBeingEdited.content;
+
+        const inputTitle = getTitle();
+        const inputContent = getContent();
+
+        //check if storedtitle or storedcontent is different from current input
+        if (storedTitle != inputTitle || storedContent != inputContent) {
+            return true;
+        } else {
+            return false;
+        }
+    } else {
+        return false;
+    }
+}
+
+
 function saveCurrentNote() {
     if (editingNoteID) {
         updateNoteData();
@@ -165,6 +192,14 @@ function updateNoteData() {
 function addNoteToMenu() {
     const list = document.getElementById("listOfStoredNotes");
     list.innerHTML = "";
+    if (storedNotesArr.length === 0) {
+        const li = document.createElement("li");
+        li.classList.add("placeholder");
+        li.innerText = "Create and save your first note to add it to the nest";
+        list.appendChild(li);
+        return;
+    }
+    
     storedNotesArr.forEach(note => {
         const li = document.createElement("li");
         li.innerHTML = `

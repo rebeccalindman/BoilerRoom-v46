@@ -2,7 +2,6 @@
     margin: 0;
     padding: 0;
     font-family: monospace;
-    background-color: #f2f2f2;
     box-sizing: border-box;
 }
 
@@ -94,6 +93,7 @@ aside{
     color: black;
     display: flex;
     flex-direction: column;
+    background-color: #f2f2f2;
 }
 
 #listOfStoredNotes li{
@@ -103,11 +103,17 @@ aside{
     border-bottom: 1px solid #ccc;
     color: black;
 }
-#listOfStoredNotes li:hover, #listOfStoredNotes li:hover *{
+#listOfStoredNotes li:hover {
     transition: all 0.2s ease-in-out;
     background-color: #0e4c47f8;
     color: white;
     cursor: pointer;
+}
+
+#listOfStoredNotes .placeholder:hover { /* turn off hover for placeholder */
+    background-color: inherit;
+    color: inherit;
+    cursor: default;
 }
 
 #listOfStoredNotes li:active{
