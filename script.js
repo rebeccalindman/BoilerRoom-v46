@@ -5,8 +5,8 @@ let editingNoteID = null;
 //run loadnotes when DOM loads
 document.addEventListener("DOMContentLoaded", loadNotes);
 
-// Load all stored notes into array and post them to the menu
-function loadNotes() {
+
+function loadNotes() { // Load all stored notes into array and post them to the menu
     storedNotesArr = JSON.parse(localStorage.getItem("storedNotesArr")) || [];
     Object.keys(localStorage).forEach(key => {
         if (key !== "storedNotesArr") {
@@ -20,11 +20,11 @@ function loadNotes() {
 
 
 
-function getTitle() {
+function getTitle() { //fetches title input from form
     return document.getElementById("title").value;
 }
 
-function getContent() {
+function getContent() { //fetches content input from form
     return document.getElementById("content").value;
 }
 
@@ -169,13 +169,27 @@ function createNewNote() {
 
     
 }
-/* function createNewNote() {
-    editingNoteID = null;
-    const newNote = addNote();
-    fetchNoteByID(newNote.uniqueID);
-    addNoteToMenu();
-    
-} */
+
+function checkForEdits() { // checks if the content or title has been changed since last save
+    if (editingNoteID) {
+        //get note object from array
+        const noteBeingEdited = storedNotesArr.find(item => item.uniqueID === editingNoteID);
+        const storedTitle = noteBeingEdited.title;
+        const storedContent = noteBeingEdited.content;
+
+        const inputTitle = getTitle();
+        const inputContent = getContent();
+
+        //check if storedtitle or storedcontent is different from current input
+        if (storedTitle != inputTitle || storedContent != inputContent) {
+            return true;
+        } else {
+            return false;
+        }
+    } else {
+        return false;
+    }
+}
 
 // Event listeners
 
@@ -196,25 +210,4 @@ newNote.addEventListener("reset", function (event) {
 
 });
 
-// check if the content or title has been changed since last save
-function checkForEdits() {
-    if (editingNoteID) {
-        //get note object from array
-        const noteBeingEdited = storedNotesArr.find(item => item.uniqueID === editingNoteID);
-        const storedTitle = noteBeingEdited.title;
-        const storedContent = noteBeingEdited.content;
-
-        const inputTitle = getTitle();
-        const inputContent = getContent();
-
-        //check if storedtitle or storedcontent is different from current input
-        if (storedTitle != inputTitle || storedContent != inputContent) {
-            return true;
-        } else {
-            return false;
-        }
-    } else {
-        return false;
-    }
-}
 
