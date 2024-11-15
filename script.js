@@ -2,6 +2,17 @@
 let storedNotesArr = [];
 let editingNoteID = null;
 
+// Local storage of unsaved user input
+const AUTO_SAVE_KEY = "temporaryNote";
+
+if (!localStorage.getItem(AUTO_SAVE_KEY)) {
+    localStorage.setItem(AUTO_SAVE_KEY, JSON.stringify({ title: "", content: "" }));
+}
+
+// Fetch the existing temporary note
+let temporaryNote = JSON.parse(localStorage.getItem(AUTO_SAVE_KEY));
+
+
 // DOM Elements
 const newNoteButton = document.getElementById("resetButton");
 const saveButton = document.getElementById("saveButton");
@@ -11,6 +22,14 @@ const unsavedWarning = document.getElementById("unsavedWarning");
 // Run when DOM loads
 document.addEventListener("DOMContentLoaded", function () {
     loadNotes();
+    getAutoSavedNote();
+
+    // interval for auto store note
+    setInterval(() => {
+        storeTemporaryNote();
+    }, 10000); // 10 seconds
+
+    console.log(temporaryNote);
 
     // Save Button Logic
     saveButton.addEventListener("click", function (event) {
@@ -81,6 +100,23 @@ function firstClickConfirmation(button, warningMessage, onSecondClick) {
     );
 }
 
+function storeTemporaryNote () {
+    const TITLE = getTitle();
+    const CONTENT = getContent();
+
+    localStorage.setItem(AUTO_SAVE_KEY, JSON.stringify({ title: TITLE, content: CONTENT }));
+
+}
+
+function getAutoSavedNote() {
+    const savedNote = JSON.parse(localStorage.getItem(AUTO_SAVE_KEY));
+    if (savedNote) {
+        // Populate the form fields with the saved values
+        document.getElementById("title").value = savedNote.title || "";
+        document.getElementById("content").value = savedNote.content || "";
+    }
+}
+
 function resetButtonState(button) {
     button.innerText = button.id === "resetButton" ? "New Note" : "Delete";
     button.classList.remove("warning");
@@ -129,6 +165,10 @@ function saveCurrentNote() {
         const note = addNote();
         editingNoteID = note.uniqueID;
     }
+
+    // Clear the temporary note
+    localStorage.removeItem(AUTO_SAVE_KEY);
+    
     addNoteToMenu();
     console.log("Note saved or updated.");
 }
@@ -199,7 +239,7 @@ function addNoteToMenu() {
         list.appendChild(li);
         return;
     }
-    
+
     storedNotesArr.forEach(note => {
         const li = document.createElement("li");
         li.innerHTML = `
