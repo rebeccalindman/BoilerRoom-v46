@@ -16,7 +16,7 @@ document.addEventListener("DOMContentLoaded", function () {
     saveButton.addEventListener("click", function (event) {
         event.preventDefault(); // Prevent form submission
         saveCurrentNote();
-        hideWarning(unsavedWarning);
+        hideWarningMessage(unsavedWarning);
         console.log("Note saved!");
     });
 
