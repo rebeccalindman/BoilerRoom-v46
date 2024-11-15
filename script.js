@@ -48,7 +48,6 @@ function loadNotes() { // Load all stored notes into array and post them to the 
 }
 
 
-
 function getTitle() { //fetches title input from form
     return document.getElementById("title").value;
 }
@@ -98,24 +97,31 @@ function fetchNoteByID(uniqueID) {
     }
 }
 
-function editNote() {
+function updateNoteData() {
+    if (!editingNoteID) {
+        console.error("No note is currently being edited!");
+        return null;
+    }
+
     const title = getTitle();
     const content = getContent();
     const dateAndTime = new Date().toLocaleString();
 
     const note = storedNotesArr.find(item => item.uniqueID === editingNoteID);
+
     if (note) {
         note.title = title;
         note.content = content;
         note.dateAndTime = dateAndTime;
 
         localStorage.setItem(editingNoteID, JSON.stringify(note));
+        return note; // Return the updated note
     } else {
         console.log("Note not found for editing!");
+        return null;
     }
-
-    return note;
 }
+
 
 function addNoteToMenu() {
     const list = document.getElementById("listOfStoredNotes");
@@ -163,7 +169,7 @@ function saveCurrentNote() {
 
     if (editingNoteID) {
         // Edit the existing note
-        storedNote = editNote();
+        storedNote = updateNoteData();
     } else {
         // Create a new note
         storedNote = addNote();
@@ -219,33 +225,43 @@ function checkForEdits() { // checks if the content or title has been changed si
     }
 }
 
-function firstclick(button) { //todo
-    let readyForSecondClick = true;
-    const originalButtonText = button.innerText;
-    
-    //change text of button
-    button.innerText = "Click again to confirm";
-    //change color of button
-    button.className = "warning";
-    //show warning message
-    document.getElementById("unsavedWarning").classList.remove("hidden"); //remove hidden class
+function firstclick(button) {
+    let readyForSecondClick = true; // Flag to indicate readiness for second click
+    const originalButtonText = button.innerText; // Store the original button text
 
+    // Change the button text and style for the first click
+    button.innerText = "Click again to confirm";
+    button.classList.add("warning"); // Add a warning class for visual indication
+    document.getElementById("unsavedWarning").classList.remove("hidden"); // Show the warning message
+
+    // Event listener for the second click
     const handleSecondClick = () => {
         if (readyForSecondClick) {
-            secondclick();
+            createNewNote(); // Create a new note on confirmation
+
+            // Reset button and warning state immediately after second click
+            button.innerText = originalButtonText; // Reset button text
+            button.classList.remove("warning"); // Remove warning class
+            document.getElementById("unsavedWarning").classList.add("hidden"); // Hide warning message
+            console.log("New note created after confirmation.");
         }
     };
 
-    button.addEventListener("reset", handleSecondClick);
+    // Attach the second click listener
+    button.addEventListener("click", handleSecondClick, { once: true });
 
+    // Reset button state after 3 seconds if no second click
     setTimeout(() => {
-        button.removeEventListener("reset", handleSecondClick);
-        button.innerText = originalButtonText;
-        button.className = ""; // Reset the button class if needed
-        document.getElementById("unsavedWarning").classList.add("hidden"); // Hide warning message again
-        readyForSecondClick = false;
+        if (readyForSecondClick) {
+            readyForSecondClick = false; // Disable second click readiness
+            button.innerText = originalButtonText; // Reset button text
+            button.classList.remove("warning"); // Remove warning class
+            document.getElementById("unsavedWarning").classList.add("hidden"); // Hide warning message
+        }
     }, 3000);
 }
+
+
 
 function secondclick (){ //todo
     createNewNote();
