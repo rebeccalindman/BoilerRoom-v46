@@ -21,6 +21,7 @@ const actionWarning = document.getElementById("actionWarning");
 
 // Run when DOM loads
 document.addEventListener("DOMContentLoaded", function () {
+    // Load existing notes
     loadNotes();
     getAutoSavedNote();
 
@@ -61,11 +62,47 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 
-    // Sort Button Logic
+/*     // Sort by date
     document.getElementById("sortButton").addEventListener("click", function () {
         sortByDate();
         addNoteToMenu();
+    }); */
+
+    // Sort by title
+    document.getElementById("sortTitleButton").addEventListener("click", function () {
+        sortByTitle();
+        addNoteToMenu();
+        //reset filter dropdown
+        document.getElementById("categoriesSelect").value = "all";
     });
+
+    // Sorty by content size
+    document.getElementById("sortContentButton").addEventListener("click", function () {
+        sortByContentSize();
+        addNoteToMenu();
+        //reset filter dropdown
+        document.getElementById("categoriesSelect").value = "all";
+    });
+
+    //Filter by category
+    document.getElementById("categoriesSelect").addEventListener("change", function () {
+        const selectedCategory = this.value;
+    
+        // Display all notes if "All" is selected, otherwise filter by category
+        const filteredNotes = selectedCategory.toLowerCase() === "all" 
+            ? storedNotesArr 
+            : filterNotesByCategory(selectedCategory);
+        
+        addNoteToMenu(filteredNotes);
+    });
+    
+    
+
+    // Clear all notes
+    document.getElementById("clearAllButton").addEventListener("click", function () {
+        firstClickConfirmation(this, "Are you sure you want to clear all notes?", clearAllSavedNotes);
+    });
+    
 });
 
 // Functions
@@ -106,6 +143,12 @@ function firstClickConfirmation(button, warningMessage, onSecondClick) {
     );
 }
 
+function filterNotesByCategory(category) {
+    return storedNotesArr.filter(note => (note.categories || []).includes(category));
+}
+
+
+
 function sortByDate() {
     storedNotesArr.sort((a, b) => {
         const dateA = new Date(a.date);
@@ -114,6 +157,24 @@ function sortByDate() {
     });
     console.log("Sorted notes:", storedNotesArr);
     
+}
+
+function sortByTitle() {
+    storedNotesArr.sort((a, b) => {
+        const titleA = a.title.toLowerCase();
+        const titleB = b.title.toLowerCase();
+        return titleA.localeCompare(titleB);
+    });
+    console.log("Sorted notes:", storedNotesArr);
+}
+
+function sortByContentSize() {
+    storedNotesArr.sort((a, b) => {
+        const contentA = a.content.length;
+        const contentB = b.content.length;
+        return contentB - contentA;
+    });
+    console.log("Sorted notes:", storedNotesArr);
 }
 
 function storeTemporaryNote () {
@@ -206,11 +267,9 @@ function saveCurrentNote() {
     addNoteToMenu();
 
     console.log("Stored note:", storedNote);
-    
-
-
  
 }
+
 
 function createNewNote() {
     editingNoteID = null;
@@ -218,21 +277,30 @@ function createNewNote() {
     document.getElementById("content").value = "";
     document.getElementById("date").innerText = "";
     document.getElementById("noteID").innerText = "";
+
+    // Clear all category checkboxes
+    document.querySelectorAll('input[name="category"]').forEach(checkbox => {
+        checkbox.checked = false;
+    });
+    
     console.log("Created a new note.");
 }
+
 
 function addNote() {
     const title = getTitle();
     const content = getContent();
     const uniqueID = generateUniqueID();
     const dateAndTime = new Date().toLocaleString();
-    const note = { title, content, uniqueID, dateAndTime };
+    const categories = getCategory();
+    const note = { title, content, uniqueID, dateAndTime, categories };
 
     storedNotesArr.push(note);
     localStorage.setItem(uniqueID, JSON.stringify(note));
-    
+
     return note;
 }
+
 
 function deleteNoteByID(uniqueID) {
     localStorage.removeItem(uniqueID);
@@ -249,6 +317,13 @@ function getTitle() {
 function getContent() {
     return document.getElementById("content").value;
 }
+
+function getCategory() {
+    const checkboxes = document.querySelectorAll('input[name="category"]:checked');
+    const selectedCategories = Array.from(checkboxes).map(checkbox => checkbox.value);
+    return selectedCategories;
+}
+
 
 function generateUniqueID() {
     let uniqueID = Math.random().toString(36).substring(2, 9);
@@ -268,26 +343,32 @@ function updateNoteData() {
     note.title = getTitle();
     note.content = getContent();
     note.dateAndTime = new Date().toLocaleString();
+    note.categories = getCategory(); // Use categories array
 
     localStorage.setItem(editingNoteID, JSON.stringify(note));
 
     return note; // Ensure the updated note is returned
 }
 
-function addNoteToMenu() {
+
+
+function addNoteToMenu(notesList = storedNotesArr) { //storedNotesArr is default value if notesList is not provided
     const list = document.getElementById("listOfStoredNotes");
     list.innerHTML = "";
-    if (storedNotesArr.length === 0) {
+
+    if (notesList.length === 0) {
         const li = document.createElement("li");
         li.classList.add("placeholder");
-        li.innerText = "Create and save your first note to add it to the nest";
+        li.innerText = "No notes found for the selected category.";
         list.appendChild(li);
         return;
     }
 
-    storedNotesArr.forEach(note => {
+    notesList.forEach(note => {
         const li = document.createElement("li");
+        const categoriesText = note.categories ? note.categories.join(", ") : "No Tags";
         li.innerHTML = `
+            <p style="font-size: 0.8rem; color: #555;"># ${categoriesText}</p>
             <h4>${note.title || "Untitled Note"}</h4>
             <p>${note.content.substring(0, 40) || "No content..."}</p>
             <p style="font-size: 0.8rem; font-style: italic;">${note.dateAndTime}</p>
@@ -297,13 +378,34 @@ function addNoteToMenu() {
     });
 }
 
+function clearAllSavedNotes() {
+    localStorage.clear();
+    storedNotesArr = [];
+    addNoteToMenu();
+}
+
 function fetchNoteByID(uniqueID) {
-    const note = storedNotesArr.find(note => note.uniqueID === uniqueID);
-    if (!note) return console.error("Note not found!");
+    const note = storedNotesArr.find(note => note.uniqueID === uniqueID); // find the associated note
+    if (!note) return console.error("Note not found!"); // return if note is not found
 
     document.getElementById("title").value = note.title;
     document.getElementById("content").value = note.content;
     document.getElementById("date").innerText = note.dateAndTime;
     document.getElementById("noteID").innerText = note.uniqueID;
+    
+    // Clear any previous selections
+    document.querySelectorAll('input[name="category"]').forEach(checkbox => {
+        checkbox.checked = false;
+    });
+
+    // !Check only the categories associated with the note
+    if (note.categories) {
+        note.categories.forEach(category => {
+            const checkbox = document.querySelector(`input[name="category"][value="${category}"]`);
+            if (checkbox) checkbox.checked = true;
+        });
+    }
+    
     editingNoteID = uniqueID;
 }
+

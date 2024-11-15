@@ -21,10 +21,24 @@
 
     <aside id="menu">
         <!-- <h2>Your nest of notes</h2> -->
-        <button id="sortButton">Sort by date</button>
+        <button id="sortTitleButton" type="button" class="sortButton">Sort by Title</button>
+        <button id="sortContentButton" type="button" class="sortButton">Sort by Content Size</button>
+
+        <section id="filterSection">
+            <label for="categoriesSelect">Filter by tag:</label>
+            <select name="category" id="categoriesSelect">
+                <option value="all">All</option>
+                <option value="Personal">Personal</option>
+                <option value="Work">Work</option>
+                <option value="Study">Study</option>
+        </select>
+        </section>
+
         <ul id="listOfStoredNotes">
             <li class="placeholder">Create and save your first note to add it to the nest</li>
         </ul>
+
+        <button id="clearAllButton" type="button">Empty the nest</button>
     </aside>
     
     <main>
@@ -38,6 +52,17 @@
                 <label for="content">A place for your thoughts...</label>
                 <textarea name="content" id="content" cols="30" rows="10"></textarea>
             </section>
+
+            <section class="oneLine" id="categorySection">
+                <label class="hidden">Tag</label>
+                <input type="checkbox" id="category-1" name="category" value="Personal">
+                <label for="category-1">Personal</label>
+                <input type="checkbox" id="category-2" name="category" value="Work">
+                <label for="category-2">Work</label>
+                <input type="checkbox" id="category-3" name="category" value="Study">
+                <label for="category-3">Study</label>
+            </section>
+            
             
             
             <section class="oneLine" id="infoSection">
@@ -47,6 +72,7 @@
                 
                 <h4>ID:</h4>
                 <p id="noteID"></p>
+                
                 
             </section>
 
@@ -64,6 +90,8 @@
                 <p id="actionWarning" class="hidden"></p>
 
             </section>
+
+            
 
         </form>
     </main>
