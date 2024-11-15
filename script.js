@@ -1,71 +1,118 @@
 // Global variables
 let storedNotesArr = [];
 let editingNoteID = null;
-const newNoteButton = document.getElementById("newNoteButton");
-const saveButton = document.getElementById("saveButton");
 
-// run when DOM loads
+// DOM Elements
+const newNoteButton = document.getElementById("resetButton");
+const saveButton = document.getElementById("saveButton");
+const deleteButton = document.getElementById("deleteButton");
+const unsavedWarning = document.getElementById("unsavedWarning");
+
+// Run when DOM loads
 document.addEventListener("DOMContentLoaded", function () {
     loadNotes();
 
-    // Access the form
-    const form = document.getElementById("form");
-
-    // Handle form submission (Save Button)
-    form.addEventListener("submit", function (event) {
-        event.preventDefault(); // Prevent default form submission
-        saveCurrentNote(); // Save the current note
-        document.getElementById("unsavedWarning").classList.add("hidden"); // Hide warning message
+    // Save Button Logic
+    saveButton.addEventListener("click", function (event) {
+        event.preventDefault(); // Prevent form submission
+        saveCurrentNote();
+        hideWarning(unsavedWarning);
         console.log("Note saved!");
     });
 
-    // Handle form reset (New Note Button)
-    form.addEventListener("reset", function (event) {
-        event.preventDefault(); // Prevent default reset behavior
+    // New Note Button Logic
+    newNoteButton.addEventListener("click", function () {
+        firstClickConfirmation(newNoteButton, "You have unsaved changes!", createNewNote);
+    });
 
-        // Check for unsaved changes before creating a new note
-        if (checkForEdits()) {
-            firstclick(document.getElementById("resetButton")); // Handle unsaved changes
+    // Delete Button Logic
+    deleteButton.addEventListener("click", function () {
+        if (editingNoteID) {
+            firstClickConfirmation(deleteButton, "Are you sure you want to delete this note?", () => {
+                deleteNoteByID(editingNoteID);
+                createNewNote(); // Reset the form after deletion
+            });
         } else {
-            createNewNote(); // Clear form and start a new note
-            document.getElementById("unsavedWarning").classList.add("hidden"); // Hide warning message
-            console.log("New note created!");
+            console.log("No note selected to delete!");
         }
     });
 });
 
+// Functions
+function firstClickConfirmation(button, warningMessage, onSecondClick) {
+    let readyForSecondClick = false;
 
-function loadNotes() { // Load all stored notes into array and post them to the menu
-    storedNotesArr = JSON.parse(localStorage.getItem("storedNotesArr")) || [];
-    Object.keys(localStorage).forEach(key => {
-        if (key !== "storedNotesArr") {
-            storedNotesArr.push(JSON.parse(localStorage.getItem(key)));
-        }
-    });
-    storedNotesArr.forEach(note => {
-        addNoteToMenu();
-    });
-}
+    // Display warning
+    showWarningMessage(warningMessage);
 
+    // First click
+    if (!readyForSecondClick) {
+        button.innerText = "Click again to confirm";
+        button.classList.add("warning");
+        readyForSecondClick = true;
 
-function getTitle() { //fetches title input from form
-    return document.getElementById("title").value;
-}
-
-function getContent() { //fetches content input from form
-    return document.getElementById("content").value;
-}
-
-function generateUniqueID() {
-    let uniqueID = Math.random().toString(36).substring(2, 9);
-    while (checkUniqueID(uniqueID)) {
-        uniqueID = Math.random().toString(36).substring(2, 9);
+        // Reset after timeout
+        setTimeout(() => {
+            if (readyForSecondClick) {
+                resetButtonState(button);
+                hideWarningMessage();
+                readyForSecondClick = false;
+            }
+        }, 3000);
     }
-    return uniqueID;
+
+    // Second click
+    button.addEventListener(
+        "click",
+        () => {
+            if (readyForSecondClick) {
+                onSecondClick();
+                resetButtonState(button);
+                hideWarningMessage();
+                readyForSecondClick = false;
+            }
+        },
+        { once: true }
+    );
 }
 
-function checkUniqueID(uniqueID) {
-    return localStorage.getItem(uniqueID);
+function resetButtonState(button) {
+    button.innerText = button.id === "resetButton" ? "New Note" : "Delete";
+    button.classList.remove("warning");
+}
+
+function showWarningMessage(message) {
+    unsavedWarning.innerText = message;
+    unsavedWarning.classList.remove("hidden");
+}
+
+function hideWarningMessage() {
+    unsavedWarning.classList.add("hidden");
+}
+
+function loadNotes() {
+    storedNotesArr = JSON.parse(localStorage.getItem("storedNotesArr")) || [];
+    storedNotesArr.forEach(note => addNoteToMenu(note));
+}
+
+function saveCurrentNote() {
+    if (editingNoteID) {
+        updateNoteData();
+    } else {
+        const note = addNote();
+        editingNoteID = note.uniqueID;
+    }
+    addNoteToMenu();
+    console.log("Note saved or updated.");
+}
+
+function createNewNote() {
+    editingNoteID = null;
+    document.getElementById("title").value = "";
+    document.getElementById("content").value = "";
+    document.getElementById("date").innerText = "";
+    document.getElementById("noteID").innerText = "";
+    console.log("Created a new note.");
 }
 
 function addNote() {
@@ -77,223 +124,66 @@ function addNote() {
 
     storedNotesArr.push(note);
     localStorage.setItem(uniqueID, JSON.stringify(note));
-
     return note;
 }
 
-function fetchNoteByID(uniqueID) {
-    let note = storedNotesArr.find(item => item.uniqueID === uniqueID);
+function deleteNoteByID(uniqueID) {
+    localStorage.removeItem(uniqueID);
+    storedNotesArr = storedNotesArr.filter(note => note.uniqueID !== uniqueID);
+    addNoteToMenu();
+    console.log("Deleted note:", uniqueID);
+}
 
-    if (note) {
-        document.getElementById("title").value = note.title;
-        document.getElementById("content").value = note.content;
-        document.getElementById("noteID").innerText = note.uniqueID;
-        document.getElementById("date").innerText = note.dateAndTime;
+// Utility Functions
+function getTitle() {
+    return document.getElementById("title").value;
+}
 
-        editingNoteID = uniqueID;
-        return (note); //todo test if works
-    } else {
-        console.log("Note not found!");
+function getContent() {
+    return document.getElementById("content").value;
+}
+
+function generateUniqueID() {
+    let uniqueID = Math.random().toString(36).substring(2, 9);
+    while (localStorage.getItem(uniqueID)) {
+        uniqueID = Math.random().toString(36).substring(2, 9);
     }
+    return uniqueID;
 }
 
 function updateNoteData() {
-    if (!editingNoteID) {
-        console.error("No note is currently being edited!");
-        return null;
-    }
+    const note = storedNotesArr.find(note => note.uniqueID === editingNoteID);
+    if (!note) return console.error("No note to update!");
 
-    const title = getTitle();
-    const content = getContent();
-    const dateAndTime = new Date().toLocaleString();
+    note.title = getTitle();
+    note.content = getContent();
+    note.dateAndTime = new Date().toLocaleString();
 
-    const note = storedNotesArr.find(item => item.uniqueID === editingNoteID);
-
-    if (note) {
-        note.title = title;
-        note.content = content;
-        note.dateAndTime = dateAndTime;
-
-        localStorage.setItem(editingNoteID, JSON.stringify(note));
-        return note; // Return the updated note
-    } else {
-        console.log("Note not found for editing!");
-        return null;
-    }
+    localStorage.setItem(editingNoteID, JSON.stringify(note));
 }
-
 
 function addNoteToMenu() {
     const list = document.getElementById("listOfStoredNotes");
-    list.innerHTML = '';
-
+    list.innerHTML = "";
     storedNotesArr.forEach(note => {
-        const menuListItem = document.createElement("li");
-
-        const title = document.createElement("h4");
-        title.innerText = note.title.substring(0, 20);
-        if (note.title == "") {
-            title.innerText = "New Note" + " " + note.dateAndTime;
-        }
-
-        const date = document.createElement("p");
-        date.style.fontSize = "0.8rem";
-        date.style.fontStyle = "italic";
-        date.innerText = note.dateAndTime;
-
-        const preview = document.createElement("p");
-        preview.innerText = note.content.substring(0, 40);
-        if (note.content.length > 40) {
-            preview.innerText = note.content.substring(0, 40) + "...";
-        }
-
-        menuListItem.appendChild(title);
-        menuListItem.appendChild(date);
-        menuListItem.appendChild(preview);
-
-        menuListItem.addEventListener("click", () => {
-            fetchNoteByID(note.uniqueID);
-        });
-
-        list.appendChild(menuListItem);
+        const li = document.createElement("li");
+        li.innerHTML = `
+            <h4>${note.title || "Untitled Note"}</h4>
+            <p>${note.content.substring(0, 40) || "No content..."}</p>
+            <p style="font-size: 0.8rem; font-style: italic;">${note.dateAndTime}</p>
+        `;
+        li.addEventListener("click", () => fetchNoteByID(note.uniqueID));
+        list.appendChild(li);
     });
 }
 
-//todo display note function ??? maybe
-/* function displayNote() {
-    // Function to display a full note
-} */
+function fetchNoteByID(uniqueID) {
+    const note = storedNotesArr.find(note => note.uniqueID === uniqueID);
+    if (!note) return console.error("Note not found!");
 
-function saveCurrentNote() {
-    let storedNote;
-
-    if (editingNoteID) {
-        // Edit the existing note
-        storedNote = updateNoteData();
-    } else {
-        // Create a new note
-        storedNote = addNote();
-        editingNoteID = storedNote.uniqueID;
-    }
-
-    // Update the date and ID display
-    document.getElementById("date").innerText = storedNote.dateAndTime;
-    document.getElementById("noteID").innerText = storedNote.uniqueID;
-
-    // Refresh the notes list
-    addNoteToMenu();
-
-    console.log("Stored note:", storedNote);
-    
-
-
- 
+    document.getElementById("title").value = note.title;
+    document.getElementById("content").value = note.content;
+    document.getElementById("date").innerText = note.dateAndTime;
+    document.getElementById("noteID").innerText = note.uniqueID;
+    editingNoteID = uniqueID;
 }
-
-function createNewNote() {
-    editingNoteID = null;
-
-    document.getElementById("title").value = "";
-    document.getElementById("content").value = "";
-    document.getElementById("date").innerText = "";
-    document.getElementById("noteID").innerText = "";
-
-    console.log("Created a new note.");
-
-
-    
-}
-
-function checkForEdits() { // checks if the content or title has been changed since last save
-    if (editingNoteID) {
-        //get note object from array
-        const noteBeingEdited = storedNotesArr.find(item => item.uniqueID === editingNoteID);
-        const storedTitle = noteBeingEdited.title;
-        const storedContent = noteBeingEdited.content;
-
-        const inputTitle = getTitle();
-        const inputContent = getContent();
-
-        //check if storedtitle or storedcontent is different from current input
-        if (storedTitle != inputTitle || storedContent != inputContent) {
-            return true;
-        } else {
-            return false;
-        }
-    } else {
-        return false;
-    }
-}
-
-function firstclick(button) {
-    let readyForSecondClick = true; // Flag to indicate readiness for second click
-    const originalButtonText = button.innerText; // Store the original button text
-
-    // Change the button text and style for the first click
-    button.innerText = "Click again to confirm";
-    button.classList.add("warning"); // Add a warning class for visual indication
-    document.getElementById("unsavedWarning").classList.remove("hidden"); // Show the warning message
-
-    // Event listener for the second click
-    const handleSecondClick = () => {
-        if (readyForSecondClick) {
-            createNewNote(); // Create a new note on confirmation
-
-            // Reset button and warning state immediately after second click
-            button.innerText = originalButtonText; // Reset button text
-            button.classList.remove("warning"); // Remove warning class
-            document.getElementById("unsavedWarning").classList.add("hidden"); // Hide warning message
-            console.log("New note created after confirmation.");
-        }
-    };
-
-    // Attach the second click listener
-    button.addEventListener("click", handleSecondClick, { once: true });
-
-    // Reset button state after 3 seconds if no second click
-    setTimeout(() => {
-        if (readyForSecondClick) {
-            readyForSecondClick = false; // Disable second click readiness
-            button.innerText = originalButtonText; // Reset button text
-            button.classList.remove("warning"); // Remove warning class
-            document.getElementById("unsavedWarning").classList.add("hidden"); // Hide warning message
-        }
-    }, 3000);
-}
-
-
-
-function secondclick (){ //todo
-    createNewNote();
-
-    document.getElementById("unsavedWarning").className = "hidden";
-    document.getElementById("newNoteButton").className = "";
-    console.log("New note created after confirmation.");
-}
-
-/* // Event listeners
-
-
-saveButton.addEventListener("click", function (event) {
-    event.preventDefault(); // Save changes to the current note
-    saveCurrentNote();
-    document.getElementById("unsavedWarning").classList.add("hidden"); // Hide warning message again
-    document.getElementById("newNoteButton").classList.remove("warning"); // remove warning class button color
-}); 
-
-
-newNoteButton.addEventListener("click", function (event) { // Create a new note
-    event.preventDefault();
-
-    if (checkForEdits()) {
-        firstclick(newNoteButton);
-    } else {
-        createNewNote();
-        document.getElementById("unsavedWarning").classList.add("hidden"); // Hide warning message again
-        document.getElementById("newNoteButton").classList.remove("warning"); // remove warning class button color
-    }
-
-});
-
-
- */

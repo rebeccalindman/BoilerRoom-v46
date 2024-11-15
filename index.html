@@ -3,14 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Anteckningar</title>
+    <title>NoteNest</title>
 
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Barrio&display=swap" rel="stylesheet"> 
+    <link href="https://fonts.googleapis.com/css2?family=Barrio&display=swap" rel="stylesheet">
 
-    <!-- <link rel="shortcut icon" href="favicon.ico" type="image/x-icon"> --> <!-- todo add favicon -->
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -18,25 +17,19 @@
         <h1>NoteNest</h1>
     </header>
     
-    <!-- todo Nav bar contents -->
-    <nav>
-    </nav>
-    
+    <nav></nav>
+
     <aside id="menu">
-        aside #menu
+        <p>aside #menu</p>
         <ul id="listOfStoredNotes">
             <li class="placeholder">Create and save your first note to add it to the nest</li>
-
         </ul>
-        
-
     </aside>
+    
     <main>
         <h2>Note</h2>
         <form action="" id="form">
-            
             <section id="titleSection">
-                <!-- <label for="title" placeholder="Title" aria-placeholder="Title">Title: </label> -->
                 <input type="text" name="title" id="title" placeholder="Title">
             </section>
             
@@ -45,27 +38,23 @@
                 <textarea name="content" id="content" cols="30" rows="10"></textarea>
             </section>
             
-            <!-- Buttons -->
             <div class="buttonWrapper">
                 <button id="saveButton" type="submit">Save</button>
-                <button id="resetButton" type="reset">New Note</button>
-                <p id="unsavedWarning" class="hidden">You have unsaved changes!</p>
+                <button id="resetButton" type="button" aria-label="New Note">New Note</button>
+                <button id="deleteButton" type="button" aria-label="Delete current note">Delete</button>
+                <p id="unsavedWarning" class="hidden"></p>
             </div>
-            
-            
+
             <section class="oneLine" id="infoSection">
                 <h4>Last save:</h4>
-                <p id="date"></p><!-- todo add date -->
-                
+                <p id="date"></p>
                 <h4>ID:</h4>
-                <p id="noteID"></p> <!-- todo add unique ID -->
-            
+                <p id="noteID"></p>
             </section>
         </form>
     </main>
-    <footer>
-        footer
-    </footer>
+
+    <footer>footer</footer>
 
     <script src="script.js"></script>
 </body>
