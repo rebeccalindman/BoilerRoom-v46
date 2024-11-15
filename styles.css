@@ -40,7 +40,7 @@ main {
     grid-area: main;
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: start;
     align-items: center;
     padding: 2rem;
 }
@@ -118,11 +118,22 @@ footer{
     background-color: #f2f2f2;
 }
 
+/* general elements */
+button {
+    padding: .2rem 1rem;
+    border-radius: .5rem;
+    border: #ccc solid 1px;
+}
 
+/* classes */
 .oneLine{
     display: flex;
     flex-direction: row;
     gap: 1rem;
+}
+
+.hidden {
+    display: none;
 }
 
 

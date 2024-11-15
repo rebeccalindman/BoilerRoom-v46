@@ -191,19 +191,23 @@ function checkForEdits() { // checks if the content or title has been changed si
     }
 }
 
+function clickTwiceToConfirm (){ //todo
+    
+}
+
 // Event listeners
 
-// Create a new note
 const saveNote = document.getElementById("form");
-saveNote.addEventListener("submit", saveCurrentNote);
+saveNote.addEventListener("submit", saveCurrentNote); // Save changes to the current note
 
 const newNote = document.getElementById("form");
-newNote.addEventListener("reset", function (event) {
+newNote.addEventListener("reset", function (event) { // Create a new note
     event.preventDefault();
 
     if (checkForEdits()) {
         console.log("there are edits");
-        //display error message under button
+        //todo display error message under button
+        /* clickTwiceToConfirm(); */ // todo
     } else {
         createNewNote();
     }

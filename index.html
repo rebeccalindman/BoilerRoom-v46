@@ -48,8 +48,11 @@
                 <label for="content">Content:</label>
                 <textarea name="content" id="content" cols="30" rows="10"></textarea>
             </section>
-            <button type="submit">Save</button>
-            <button type="reset">New Note</button>
+            <div class="buttonWrapper">
+                <button type="submit">Save</button>
+                <button type="reset">New Note</button>
+                <p id ="errorUnsaved">You have unsaved changes!</p> <!-- todo add hidden class -->
+            </div>
             
         </form>
     </main>
