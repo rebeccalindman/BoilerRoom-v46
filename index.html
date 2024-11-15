@@ -17,43 +17,49 @@
     <header>
         <h1>NoteNest</h1>
     </header>
+    
+    <!-- todo Nav bar contents -->
     <nav>
-        nav
     </nav>
+    
     <aside id="menu">
         aside #menu
         <ul id="listOfStoredNotes">
-            <li>hej</li>
+            <li class="placeholder">Create and save your first note to add it to the nest</li>
 
         </ul>
         
 
     </aside>
     <main>
-        Main
+        <h2>Note</h2>
         <form action="" id="form">
+            
             <section id="titleSection">
                 <!-- <label for="title" placeholder="Title" aria-placeholder="Title">Title: </label> -->
                 <input type="text" name="title" id="title" placeholder="Title">
             </section>
-            <section class="oneLine" id="uniqueIDSection">
-                <p>Unique ID:</p>
-                <p id="noteID">Unique ID placeholder</p> <!-- todo add unique ID -->
-            </section>
-            <section class="oneLine" id="dateSection">
-                <p>Date:</p>
-                <p id="date">Date placeholder</p><!-- todo add date -->
-            </section>
+            
             <section id="contentSection">
-                <label for="content">Content:</label>
+                <label for="content">A place for your thoughts...</label>
                 <textarea name="content" id="content" cols="30" rows="10"></textarea>
             </section>
+            
+            <!-- Buttons -->
             <div class="buttonWrapper">
-                <button type="submit">Save</button>
-                <button type="reset">New Note</button>
-                <p id ="errorUnsaved">You have unsaved changes!</p> <!-- todo add hidden class -->
+                <button id="saveButton" type="submit">Save</button>
+                <button id="resetButton" type="reset">New Note</button>
+                <p id ="unsavedWarning" class="hidden">You have unsaved changes!</p> 
             </div>
             
+            <section class="oneLine" id="infoSection">
+                <h4>Last save:</h4>
+                <p id="date"></p><!-- todo add date -->
+                
+                <h4>ID:</h4>
+                <p id="noteID"></p> <!-- todo add unique ID -->
+            
+            </section>
         </form>
     </main>
     <footer>

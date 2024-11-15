@@ -24,6 +24,8 @@ header {
     grid-area: header;
     /* background-color: aquamarine; */
     padding: 1.5rem;
+    background-color: #0e4c47f8;
+    color: white;
     
 }
 
@@ -32,6 +34,8 @@ h1 {
     font-weight: 400;
     font-style: normal;
     width: fit-content;
+    margin-left: 2rem;
+    background-color: rgba(255, 255, 255, 0);
 }
 
 /* main */ /* Mobile first approach */
@@ -71,12 +75,17 @@ form section textarea {
     border-radius: 0.5rem;
 }
 
+#unsavedWarning {
+    color: rgb(191, 17, 17);
+}
+
 /* aside */
 aside{
     grid-area: aside;
     /* width: clamp(100px, 100%, 400px); */
-    background-color: bisque;
+    background-color: rgb(193, 171, 145);
     align-items: start;
+    padding: 1rem;
 
 }
 
@@ -94,16 +103,29 @@ aside{
     border-bottom: 1px solid #ccc;
     color: black;
 }
-#listOfStoredNotes li:hover{
-    background-color: #f2f2f2;
+#listOfStoredNotes li:hover, #listOfStoredNotes li:hover *{
+    transition: all 0.2s ease-in-out;
+    background-color: #0e4c47f8;
+    color: white;
+    cursor: pointer;
+}
+
+#listOfStoredNotes li:active{
+    transition: all 0.1s ease-in-out;
+    opacity: 50%;
+    color: rgb(103, 62, 33);
 }
 
 
 #listOfStoredNotes li p {
-    word-break: break-all;
+    word-break: break-word;
     overflow-wrap: break-word;
 
-}   
+}  
+#infoSection{
+    opacity: 50%;
+}
+#infoSection p {margin-right: 2rem;}
 
 /* nav */
 nav{
@@ -123,17 +145,28 @@ button {
     padding: .2rem 1rem;
     border-radius: .5rem;
     border: #ccc solid 1px;
+    cursor: pointer;
 }
 
 /* classes */
+
+.hidden {
+    display: none;
+}
+.placeholder {
+    border: none;
+    font-style: italic;
+    opacity: 50%;
+}
 .oneLine{
     display: flex;
     flex-direction: row;
     gap: 1rem;
 }
 
-.hidden {
-    display: none;
+.warning {
+    border: rgb(191, 17, 17) solid 2px; /* red for warnings */
+    background-color: #e5c2c2;
 }
 
 

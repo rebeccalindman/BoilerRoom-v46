@@ -129,9 +129,7 @@ function addNoteToMenu() {
     // Function to display a full note
 } */
 
-function saveCurrentNote(event) {
-    event.preventDefault();
-
+function saveCurrentNote() {
     let storedNote;
 
     if (editingNoteID) {
@@ -151,6 +149,7 @@ function saveCurrentNote(event) {
     addNoteToMenu();
 
     console.log("Stored note:", storedNote);
+    
 
 
  
@@ -191,25 +190,39 @@ function checkForEdits() { // checks if the content or title has been changed si
     }
 }
 
-function clickTwiceToConfirm (){ //todo
-    
+function firstclick (){ //todo
+    //change text of button
+
+    //change color
+
+    //show warning message
+}
+
+function secondclick (function){
+    //run the function
 }
 
 // Event listeners
 
 const saveNote = document.getElementById("form");
-saveNote.addEventListener("submit", saveCurrentNote); // Save changes to the current note
+saveNote.addEventListener("submit", function (event) {
+    event.preventDefault(); // Save changes to the current note
+    saveCurrentNote();
+    document.getElementById("unsavedWarning").className = "hidden"; //hide unsaved edits warning
+    document.getElementById("resetButton").className = ""; //reset button color
+}); 
 
 const newNote = document.getElementById("form");
 newNote.addEventListener("reset", function (event) { // Create a new note
     event.preventDefault();
 
     if (checkForEdits()) {
-        console.log("there are edits");
-        //todo display error message under button
-        /* clickTwiceToConfirm(); */ // todo
+        document.getElementById("unsavedWarning").className = "";
+        document.getElementById("resetButton").className = "warning";
     } else {
         createNewNote();
+        document.getElementById("unsavedWarning").className = "hidden";
+        document.getElementById("resetButton").className = "";
     }
 
 });
