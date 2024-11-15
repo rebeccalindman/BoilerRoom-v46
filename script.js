@@ -1,9 +1,38 @@
 // Global variables
 let storedNotesArr = [];
 let editingNoteID = null;
+const newNoteButton = document.getElementById("newNoteButton");
+const saveButton = document.getElementById("saveButton");
 
-//run loadnotes when DOM loads
-document.addEventListener("DOMContentLoaded", loadNotes);
+// run when DOM loads
+document.addEventListener("DOMContentLoaded", function () {
+    loadNotes();
+
+    // Access the form
+    const form = document.getElementById("form");
+
+    // Handle form submission (Save Button)
+    form.addEventListener("submit", function (event) {
+        event.preventDefault(); // Prevent default form submission
+        saveCurrentNote(); // Save the current note
+        document.getElementById("unsavedWarning").classList.add("hidden"); // Hide warning message
+        console.log("Note saved!");
+    });
+
+    // Handle form reset (New Note Button)
+    form.addEventListener("reset", function (event) {
+        event.preventDefault(); // Prevent default reset behavior
+
+        // Check for unsaved changes before creating a new note
+        if (checkForEdits()) {
+            firstclick(document.getElementById("resetButton")); // Handle unsaved changes
+        } else {
+            createNewNote(); // Clear form and start a new note
+            document.getElementById("unsavedWarning").classList.add("hidden"); // Hide warning message
+            console.log("New note created!");
+        }
+    });
+});
 
 
 function loadNotes() { // Load all stored notes into array and post them to the menu
@@ -190,41 +219,65 @@ function checkForEdits() { // checks if the content or title has been changed si
     }
 }
 
-function firstclick (){ //todo
+function firstclick(button) { //todo
+    let readyForSecondClick = true;
+    const originalButtonText = button.innerText;
+    
     //change text of button
-
-    //change color
-
+    button.innerText = "Click again to confirm";
+    //change color of button
+    button.className = "warning";
     //show warning message
+    document.getElementById("unsavedWarning").classList.remove("hidden"); //remove hidden class
+
+    const handleSecondClick = () => {
+        if (readyForSecondClick) {
+            secondclick();
+        }
+    };
+
+    button.addEventListener("reset", handleSecondClick);
+
+    setTimeout(() => {
+        button.removeEventListener("reset", handleSecondClick);
+        button.innerText = originalButtonText;
+        button.className = ""; // Reset the button class if needed
+        document.getElementById("unsavedWarning").classList.add("hidden"); // Hide warning message again
+        readyForSecondClick = false;
+    }, 3000);
 }
 
-function secondclick (function){
-    //run the function
+function secondclick (){ //todo
+    createNewNote();
+
+    document.getElementById("unsavedWarning").className = "hidden";
+    document.getElementById("newNoteButton").className = "";
+    console.log("New note created after confirmation.");
 }
 
-// Event listeners
+/* // Event listeners
 
-const saveNote = document.getElementById("form");
-saveNote.addEventListener("submit", function (event) {
+
+saveButton.addEventListener("click", function (event) {
     event.preventDefault(); // Save changes to the current note
     saveCurrentNote();
-    document.getElementById("unsavedWarning").className = "hidden"; //hide unsaved edits warning
-    document.getElementById("resetButton").className = ""; //reset button color
+    document.getElementById("unsavedWarning").classList.add("hidden"); // Hide warning message again
+    document.getElementById("newNoteButton").classList.remove("warning"); // remove warning class button color
 }); 
 
-const newNote = document.getElementById("form");
-newNote.addEventListener("reset", function (event) { // Create a new note
+
+newNoteButton.addEventListener("click", function (event) { // Create a new note
     event.preventDefault();
 
     if (checkForEdits()) {
-        document.getElementById("unsavedWarning").className = "";
-        document.getElementById("resetButton").className = "warning";
+        firstclick(newNoteButton);
     } else {
         createNewNote();
-        document.getElementById("unsavedWarning").className = "hidden";
-        document.getElementById("resetButton").className = "";
+        document.getElementById("unsavedWarning").classList.add("hidden"); // Hide warning message again
+        document.getElementById("newNoteButton").classList.remove("warning"); // remove warning class button color
     }
 
 });
 
 
+ */
