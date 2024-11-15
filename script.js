@@ -1,5 +1,22 @@
 let storedNotesArr = [];
 let editingNoteID = null;
+let savedButtonPressed = false;
+
+// Load all stored notes into array and post them to the menu
+function loadNotes() {
+    storedNotesArr = JSON.parse(localStorage.getItem("storedNotesArr")) || [];
+    Object.keys(localStorage).forEach(key => {
+        if (key !== "storedNotesArr") {
+            storedNotesArr.push(JSON.parse(localStorage.getItem(key)));
+        }
+    });
+    storedNotesArr.forEach(note => {
+        addNoteToMenu();
+    });
+}
+
+//run loadnotes when DOM loads
+document.addEventListener("DOMContentLoaded", loadNotes);
 
 function getTitle() {
     return document.getElementById("title").value;
@@ -44,6 +61,7 @@ function fetchNoteByID(uniqueID) {
         document.getElementById("date").innerText = note.dateAndTime;
 
         editingNoteID = uniqueID;
+        return (note); //todo test if works
     } else {
         console.log("Note not found!");
     }
@@ -130,6 +148,9 @@ function saveCurrentNote(event) {
     addNoteToMenu();
 
     console.log("Stored note:", storedNote);
+
+    savedButtonPressed = true;
+
  
 }
 
@@ -142,6 +163,9 @@ function createNewNote() {
     document.getElementById("noteID").innerText = "";
 
     console.log("Created a new note.");
+
+    savedButtonPressed = false;
+
     
 }
 /* function createNewNote() {
@@ -162,10 +186,34 @@ const newNote = document.getElementById("form");
 newNote.addEventListener("reset", function (event) {
     event.preventDefault();
 
-    createNewNote();
-
-
+    if (checkForEdits()) {
+        console.log("there are edits");
+        //display error message under button
+    } else {
+        createNewNote();
+    }
 
 });
 
+// check if the content or title has been changed since last save
+function checkForEdits() {
+    if (editingNoteID) {
+        //get note object from array
+        const noteBeingEdited = storedNotesArr.find(item => item.uniqueID === editingNoteID);
+        const storedTitle = noteBeingEdited.title;
+        const storedContent = noteBeingEdited.content;
+
+        const inputTitle = document.getElementById("title").value;
+        const inputContent = document.getElementById("content").value;
+
+        //check if storedtitle or storedcontent is different from current input
+        if (storedTitle != inputTitle || storedContent != inputContent) {
+            return true;
+        } else {
+            return false;
+        }
+    } else {
+        return false;
+    }
+}
 
