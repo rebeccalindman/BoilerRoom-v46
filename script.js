@@ -147,10 +147,19 @@ function hideWarningMessage() {
     actionWarning.classList.add("hidden");
 }
 
-function loadNotes() {
+function loadNotes() { // Load all stored notes into array and post them to the menu
     storedNotesArr = JSON.parse(localStorage.getItem("storedNotesArr")) || [];
-    storedNotesArr.forEach(note => addNoteToMenu(note));
+    Object.keys(localStorage).forEach(key => {
+        if (key !== "storedNotesArr") {
+            storedNotesArr.push(JSON.parse(localStorage.getItem(key)));
+        }
+    });
+    storedNotesArr.forEach(note => {
+        addNoteToMenu();
+    });
 }
+
+
 
 function checkForEdits() { // checks if the content or title has been changed since last save
     if (editingNoteID) {
