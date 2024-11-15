@@ -1,6 +1,9 @@
+// Global variables
 let storedNotesArr = [];
 let editingNoteID = null;
-let savedButtonPressed = false;
+
+//run loadnotes when DOM loads
+document.addEventListener("DOMContentLoaded", loadNotes);
 
 // Load all stored notes into array and post them to the menu
 function loadNotes() {
@@ -15,8 +18,7 @@ function loadNotes() {
     });
 }
 
-//run loadnotes when DOM loads
-document.addEventListener("DOMContentLoaded", loadNotes);
+
 
 function getTitle() {
     return document.getElementById("title").value;
@@ -122,9 +124,10 @@ function addNoteToMenu() {
     });
 }
 
-function displayNote() {
+//todo display note function ??? maybe
+/* function displayNote() {
     // Function to display a full note
-}
+} */
 
 function saveCurrentNote(event) {
     event.preventDefault();
@@ -149,7 +152,6 @@ function saveCurrentNote(event) {
 
     console.log("Stored note:", storedNote);
 
-    savedButtonPressed = true;
 
  
 }
@@ -164,7 +166,6 @@ function createNewNote() {
 
     console.log("Created a new note.");
 
-    savedButtonPressed = false;
 
     
 }
@@ -203,8 +204,8 @@ function checkForEdits() {
         const storedTitle = noteBeingEdited.title;
         const storedContent = noteBeingEdited.content;
 
-        const inputTitle = document.getElementById("title").value;
-        const inputContent = document.getElementById("content").value;
+        const inputTitle = getTitle();
+        const inputContent = getContent();
 
         //check if storedtitle or storedcontent is different from current input
         if (storedTitle != inputTitle || storedContent != inputContent) {
