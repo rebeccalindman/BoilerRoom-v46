@@ -60,6 +60,12 @@ document.addEventListener("DOMContentLoaded", function () {
             console.log("No note selected to delete!");
         }
     });
+
+    // Sort Button Logic
+    document.getElementById("sortButton").addEventListener("click", function () {
+        sortByDate();
+        addNoteToMenu();
+    });
 });
 
 // Functions
@@ -98,6 +104,16 @@ function firstClickConfirmation(button, warningMessage, onSecondClick) {
         },
         { once: true }
     );
+}
+
+function sortByDate() {
+    storedNotesArr.sort((a, b) => {
+        const dateA = new Date(a.date);
+        const dateB = new Date(b.date);
+        return dateB - dateA;
+    });
+    console.log("Sorted notes:", storedNotesArr);
+    
 }
 
 function storeTemporaryNote () {

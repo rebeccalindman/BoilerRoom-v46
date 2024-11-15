@@ -95,10 +95,27 @@ form textarea:focus-visible, form input:focus-visible, button:focus-visible {
 /* ASIDE (NOTES LIST) STYLING */
 aside {
     grid-area: aside;
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    align-items: center;
     background-color: #c1ab91;
     padding: 1.6rem 1rem;
     color: #333;
     border-right: 1px solid #ddd;
+}
+
+/* SORT BUTTON STYLING */
+#sortButton {
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
+    padding: 0.2;
+    font-size: small;
+    margin-bottom: .5rem;
+}
+#sortButton:hover {
+    background-color: #ddb8eda2;
 }
 
 /* NOTES LIST */
@@ -129,6 +146,7 @@ aside {
     color: inherit;
     cursor: default;
 }
+
 
 /* FOOTER STYLING */
 footer {
