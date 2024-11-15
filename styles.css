@@ -74,7 +74,12 @@ form section textarea {
     border-radius: 0.5rem;
 }
 
-#unsavedWarning {
+form section textarea {
+    height: clamp(10rem, fit-content, 100rem);
+    resize: none; /* turn off auto resize */
+}
+
+#actionWarning {
     color: rgb(191, 17, 17);
 }
 
@@ -128,9 +133,11 @@ aside{
     overflow-wrap: break-word;
 
 }  
+
 #infoSection{
     opacity: 50%;
 }
+
 #infoSection p {margin-right: 2rem;}
 
 /* nav */
@@ -146,6 +153,31 @@ footer{
     background-color: #f2f2f2;
 }
 
+/* Footer styling */
+footer {
+    background-color: #f2f2f2; /* Light background for contrast */
+    color: #333; /* Dark text for readability */
+    text-align: center;
+    padding: 1rem 0;
+    font-size: 0.9rem;
+    border-top: 1px solid #ddd;
+    font-family: monospace;
+}
+
+footer p {
+    margin: 0.5rem 0;
+    line-height: 1.5;
+}
+
+footer p:first-child {
+    font-weight: bold;
+    color: #0e4c47; /* Accent color to match your header */
+}
+
+footer p:last-child {
+    color: #555; /* Slightly lighter color for the second line */
+}
+
 /* general elements */
 button {
     padding: .2rem 1rem;
@@ -154,8 +186,14 @@ button {
     cursor: pointer;
 }
 
-/* classes */
+form textarea:focus-visible, form input:focus-visible, button:focus-visible {
+    /* Draw the focus when :focus-visible is supported */
+    outline: 3px solid rgb(7, 145, 108);
+    outline-offset: 3px;
+  }
 
+
+/* classes */
 .hidden {
     display: none;
 }

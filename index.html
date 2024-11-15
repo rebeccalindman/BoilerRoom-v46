@@ -38,23 +38,40 @@
                 <textarea name="content" id="content" cols="30" rows="10"></textarea>
             </section>
             
-            <div class="buttonWrapper">
-                <button id="saveButton" type="submit">Save</button>
-                <button id="resetButton" type="button" aria-label="New Note">New Note</button>
-                <button id="deleteButton" type="button" aria-label="Delete current note">Delete</button>
-                <p id="unsavedWarning" class="hidden"></p>
-            </div>
-
+            
             <section class="oneLine" id="infoSection">
+                
                 <h4>Last save:</h4>
                 <p id="date"></p>
+                
                 <h4>ID:</h4>
                 <p id="noteID"></p>
+                
             </section>
+
+            <section id="buttonSection">
+
+                <div class="buttonWrapper">
+                    <button id="saveButton" type="submit">Save</button>
+
+                    <button id="resetButton" type="button" aria-label="New Note">New Note</button>
+
+                    <button id="deleteButton" type="button" aria-label="Delete current note">Delete</button>
+
+                </div>
+
+                <p id="actionWarning" class="hidden"></p>
+
+            </section>
+
         </form>
     </main>
 
-    <footer>footer</footer>
+    <footer>
+        <p>📓 Nested your ideas yet? Don't let them fly away! 🕊️</p>
+        <p>© 2024 NoteNest | Built for scribblers, dreamers, and nesters alike.</p>
+    </footer>
+    
 
     <script src="script.js"></script>
 </body>

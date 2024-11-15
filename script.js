@@ -17,7 +17,7 @@ let temporaryNote = JSON.parse(localStorage.getItem(AUTO_SAVE_KEY));
 const newNoteButton = document.getElementById("resetButton");
 const saveButton = document.getElementById("saveButton");
 const deleteButton = document.getElementById("deleteButton");
-const unsavedWarning = document.getElementById("unsavedWarning");
+const actionWarning = document.getElementById("actionWarning");
 
 // Run when DOM loads
 document.addEventListener("DOMContentLoaded", function () {
@@ -35,7 +35,7 @@ document.addEventListener("DOMContentLoaded", function () {
     saveButton.addEventListener("click", function (event) {
         event.preventDefault(); // Prevent form submission
         saveCurrentNote();
-        hideWarningMessage(unsavedWarning);
+        hideWarningMessage(actionWarning);
         console.log("Note saved!");
     });
 
@@ -71,7 +71,7 @@ function firstClickConfirmation(button, warningMessage, onSecondClick) {
 
     // First click
     if (!readyForSecondClick) {
-        button.innerText = "Click again to confirm";
+        button.innerText = "Sure?";
         button.classList.add("warning");
         readyForSecondClick = true;
 
@@ -123,12 +123,12 @@ function resetButtonState(button) {
 }
 
 function showWarningMessage(message) {
-    unsavedWarning.innerText = message;
-    unsavedWarning.classList.remove("hidden");
+    actionWarning.innerText = message;
+    actionWarning.classList.remove("hidden");
 }
 
 function hideWarningMessage() {
-    unsavedWarning.classList.add("hidden");
+    actionWarning.classList.add("hidden");
 }
 
 function loadNotes() {
@@ -159,18 +159,32 @@ function checkForEdits() { // checks if the content or title has been changed si
 
 
 function saveCurrentNote() {
+    let storedNote;
+
     if (editingNoteID) {
-        updateNoteData();
+        // Edit the existing note
+        storedNote = updateNoteData();
     } else {
-        const note = addNote();
-        editingNoteID = note.uniqueID;
+        // Create a new note
+        storedNote = addNote();
+        editingNoteID = storedNote.uniqueID;
     }
+
+    // Update the date and ID display
+    document.getElementById("date").innerText = storedNote.dateAndTime;
+    document.getElementById("noteID").innerText = storedNote.uniqueID;
 
     // Clear the temporary note
     localStorage.removeItem(AUTO_SAVE_KEY);
-    
+
+    // Refresh the notes list
     addNoteToMenu();
-    console.log("Note saved or updated.");
+
+    console.log("Stored note:", storedNote);
+    
+
+
+ 
 }
 
 function createNewNote() {
@@ -191,6 +205,7 @@ function addNote() {
 
     storedNotesArr.push(note);
     localStorage.setItem(uniqueID, JSON.stringify(note));
+    
     return note;
 }
 
@@ -220,13 +235,18 @@ function generateUniqueID() {
 
 function updateNoteData() {
     const note = storedNotesArr.find(note => note.uniqueID === editingNoteID);
-    if (!note) return console.error("No note to update!");
+    if (!note) {
+        console.error("No note to update!");
+        return null;
+    }
 
     note.title = getTitle();
     note.content = getContent();
     note.dateAndTime = new Date().toLocaleString();
 
     localStorage.setItem(editingNoteID, JSON.stringify(note));
+
+    return note; // Ensure the updated note is returned
 }
 
 function addNoteToMenu() {
