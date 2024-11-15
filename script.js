@@ -186,6 +186,7 @@ function checkForEdits() { // checks if the content or title has been changed si
 function saveCurrentNote() {
     let storedNote;
 
+<<<<<<< Updated upstream
     if (editingNoteID) {
         // Edit the existing note
         storedNote = updateNoteData();
@@ -307,3 +308,42 @@ function fetchNoteByID(uniqueID) {
     document.getElementById("noteID").innerText = note.uniqueID;
     editingNoteID = uniqueID;
 }
+=======
+    // Event listener for the second click
+    const handleSecondClick = () => {
+        if (readyForSecondClick) {
+            createNewNote(); // Create a new note on confirmation
+
+            // Reset button and warning state immediately after second click
+            button.innerText = originalButtonText; // Reset button text
+            button.classList.remove("warning"); // Remove warning class
+            document.getElementById("unsavedWarning").classList.add("hidden"); // Hide warning message
+            console.log("New note created after confirmation.");
+        }
+    };
+
+    // Attach the second click listener
+    button.addEventListener("click", handleSecondClick, { once: true });
+
+    // Reset button state after 3 seconds if no second click
+    setTimeout(() => {
+        if (readyForSecondClick) {
+            readyForSecondClick = false; // Disable second click readiness
+            button.innerText = originalButtonText; // Reset button text
+            button.classList.remove("warning"); // Remove warning class
+            document.getElementById("unsavedWarning").classList.add("hidden"); // Hide warning message
+        }
+    }, 3000);
+}
+
+
+
+function secondclick (){ //todo
+    createNewNote();
+
+    document.getElementById("unsavedWarning").className = "hidden";
+    document.getElementById("newNoteButton").className = "";
+    console.log("New note created after confirmation.");
+}
+
+>>>>>>> Stashed changes
