@@ -23,8 +23,8 @@
     <aside id="menu">
         <!-- <h2>Your nest of notes</h2> -->
 
-        <button id="sortTitleButton" type="button" class="sortButton">Sort by Title</button>
-        <button id="sortContentButton" type="button" class="sortButton">Sort by Content Size</button>
+        <button id="sortTitleButton" type="button" class="sortButton">Sort nest by <b>title</b></button>
+        <button id="sortContentButton" type="button" class="sortButton">Sort nest by <b>note size</b></button>
 
   
         <!-- Filter by tag -->
@@ -39,7 +39,7 @@
         </section>
 
          <!-- Searchbar -->
-         <input type="text" id="searchInput" placeholder="Search for a note...">
+         <input type="text" id="searchInput" placeholder="Search in the nest...">
 
         <ul id="listOfStoredNotes">
             <li class="placeholder">Create and save your first note to add it to the nest</li>
@@ -47,13 +47,14 @@
 
         <!-- Delete all notes -->
         <button id="clearAllButton" type="button">Empty the nest</button>
+        <p id="clearAllWarning" class="hidden">Are you sure you want to clear ALL notes?</p>
         
     </aside>
 
 <!-- MAIN -->
     <main>
         <!-- FORM -->
-        <h2 id="formHeader">A place for your thoughts...</h2>
+        <h2 id="formHeader">New Note</h2>
 
         <form action="" id="form">
 
@@ -69,7 +70,6 @@
 
             <!-- INPUTS -->
             <section class="oneLine" id="categorySection">
-                <label class="hidden">Tag</label>
                     <input type="checkbox" id="category-1" name="category" value="Personal">
                 <label for="category-1">Personal</label>
                     <input type="checkbox" id="category-2" name="category" value="Work">
@@ -84,7 +84,7 @@
             
             <section id="contentSection">
                <!--  <label for="content">A place for your thoughts...</label> -->
-                <textarea name="content" id="content" cols="30" rows="10"></textarea>
+                <textarea name="content" id="content" placeholder="A place for your thoughts..."></textarea>
             </section>
 
             <!-- INFO -->

@@ -29,8 +29,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 
-
-const TEMPORARY_NOTE_ID = "temporaryNoteID";
+const TEMPORARY_NOTE_ID = "temporaryNoteID"; 
 const TEMPORARY_NOTE_DATE = new Date().toLocaleString();
 if (!localStorage.getItem(AUTO_SAVE_KEY)) {
     localStorage.setItem(AUTO_SAVE_KEY, JSON.stringify({ title: "", content: "", dateAndTime: TEMPORARY_NOTE_DATE, uniqueID: TEMPORARY_NOTE_ID }));
@@ -43,14 +42,13 @@ if (!localStorage.getItem(AUTO_SAVE_KEY)) {
 
 // Functions
 let activeConfirmationButton = null;
-
-function firstClickConfirmation(button, warningMessage, onSecondClick) {
+function firstClickConfirmation(button, displayElement, warningMessage, onSecondClick) {
     // Check if this button is already in confirmation state
     if (activeConfirmationButton === button) {
         // Execute the callback on the second click
         onSecondClick();
         resetButtonState(button);
-        hideWarningMessage();
+        hideWarningMessage(displayElement);
         activeConfirmationButton = null; // Clear the active button
     } else {
         // Save the original text if not already saved
@@ -59,7 +57,7 @@ function firstClickConfirmation(button, warningMessage, onSecondClick) {
         }
 
         // Display warning
-        showWarningMessage(warningMessage);
+        showWarningMessage(displayElement, warningMessage);
         button.innerText = "Sure?";
         button.classList.add("warning");
         activeConfirmationButton = button; // Set the active confirmation button
@@ -69,7 +67,7 @@ function firstClickConfirmation(button, warningMessage, onSecondClick) {
             if (!button.contains(event.target)) {
                 // Reset the button if the click is outside
                 resetButtonState(button);
-                hideWarningMessage();
+                hideWarningMessage(displayElement);
                 activeConfirmationButton = null; // Clear the active button
 
                 // Remove the document click listener
@@ -81,21 +79,18 @@ function firstClickConfirmation(button, warningMessage, onSecondClick) {
     }
 }
 
-
+function updateFormHeaderText(){
+    const newTitle = getTitle();
+    document.getElementById("formHeader").innerText = newTitle;
+    if (newTitle === "") {
+        document.getElementById("formHeader").innerText = "New Note";
+    }
+}
 
 function filterNotesByCategory(category) {
     return storedNotesArr.filter(note => (note.categories || []).includes(category));
 }
 
-function sortByDate() {
-    storedNotesArr.sort((a, b) => {
-        const dateA = new Date(a.date);
-        const dateB = new Date(b.date);
-        return dateB - dateA;
-    });
-    console.log("Sorted notes:", storedNotesArr);
-    
-}
 
 function sortByTitle() {
     storedNotesArr.sort((a, b) => {
@@ -118,7 +113,7 @@ function sortByContentSize() {
 function storeTemporaryNote () {
     const TITLE = getTitle();
     const CONTENT = getContent();
-    const UNIQUE_ID = "temporaryNoteID";
+    const UNIQUE_ID = TEMPORARY_NOTE_ID;
     const DATE = new Date().toLocaleString();
 
     localStorage.setItem(AUTO_SAVE_KEY, JSON.stringify({ title: TITLE, content: CONTENT, uniqueID: UNIQUE_ID, dateAndTime: DATE }));
@@ -148,13 +143,13 @@ function saveOriginalButtonText(button) {
     button.dataset.originalText = button.innerText;
 }
 
-function showWarningMessage(message) {
-    actionWarning.innerText = message;
-    actionWarning.classList.remove("hidden");
+function showWarningMessage(element, message) {
+    element.innerText = message;
+    element.classList.remove("hidden");
 }
 
-function hideWarningMessage() {
-    actionWarning.classList.add("hidden");
+function hideWarningMessage(element) {
+    element.classList.add("hidden");
 }
 
 function loadNotes() { // Load all stored notes into array and post them to the menu
@@ -171,25 +166,25 @@ function loadNotes() { // Load all stored notes into array and post them to the 
 
 
 
-function checkForEdits() { // checks if the content or title has been changed since last save
-    if (editingNoteID) {
-        //get note object from array
+function checkForEdits() {
+    const inputTitle = getTitle();
+    const inputContent = getContent();
+
+    if (editingNoteID) { // If a note is being edited
+        
+        // Get the note object from the array
         const noteBeingEdited = storedNotesArr.find(item => item.uniqueID === editingNoteID);
-        const storedTitle = noteBeingEdited.title;
-        const storedContent = noteBeingEdited.content;
 
-        const inputTitle = getTitle();
-        const inputContent = getContent();
-
-        //check if storedtitle or storedcontent is different from current input
-        if (storedTitle != inputTitle || storedContent != inputContent) {
-            return true;
-        } else {
+        if (!noteBeingEdited) { // If the note cannot be found
+            console.warn("No note found for editing.");
             return false;
         }
-    } else {
-        return false;
+        // Compare stored values with input values
+        return noteBeingEdited.title !== inputTitle || noteBeingEdited.content !== inputContent;
     }
+
+     // If no note is being edited but there is input, treat it as unsaved changes
+     return inputTitle.trim() !== "" || inputContent.trim() !== "";
 }
 
 
@@ -314,12 +309,14 @@ function updateNoteData() {
 }
 
 
-
 function addNoteToMenu(notesList = storedNotesArr) { //storedNotesArr is default value if notesList is not provided
     const list = document.getElementById("listOfStoredNotes");
     list.innerHTML = ""; // Clears the content of the list element
 
-    if (notesList.length === 0) {
+    // Filter out the temporary note
+    const filteredNotes = notesList.filter(note => note.uniqueID !== "temporaryNoteID");
+
+    if (filteredNotes.length === 0) {
         const li = document.createElement("li");
         li.classList.add("placeholder");
         li.innerText = "No notes found for the selected category.";
@@ -327,7 +324,7 @@ function addNoteToMenu(notesList = storedNotesArr) { //storedNotesArr is default
         return;
     }
 
-    notesList.forEach(note => {
+    filteredNotes.forEach(note => {
         const li = document.createElement("li");
         const categoriesText = note.categories ? note.categories.join(", ") : "No Tags";
         li.innerHTML = `
@@ -337,7 +334,10 @@ function addNoteToMenu(notesList = storedNotesArr) { //storedNotesArr is default
             <p style="font-size: 0.8rem; font-style: italic;">${note.dateAndTime}</p>
         `;
         li.addEventListener("click", () => fetchNoteByID(note.uniqueID));
-        list.appendChild(li);
+
+        // Always prepend to the top
+        list.insertBefore(li, list.firstChild);
+        
     });
 }
 
@@ -370,6 +370,9 @@ function fetchNoteByID(uniqueID) {
     }
     
     editingNoteID = uniqueID;
+    updateFormHeaderText(); //updates form header text to the note title
+    console.log("Note fetched:", note);
+    
 }
 
 export {
@@ -397,6 +400,7 @@ export {
     generateUniqueID,
     getCategory,
     getTitle,
-    getContent
+    getContent,
+    updateFormHeaderText
 };
 

@@ -95,6 +95,7 @@ form {
     display: flex;
     flex-direction: column;
     align-items: end;
+    padding: .5rem;
 }
 #infoSection{
     grid-area: infoSection;
