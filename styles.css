@@ -6,10 +6,29 @@
     box-sizing: border-box;
 }
 
+
+.dark-mode {
+    background-color: #333;
+    color: #fff;
+}
+
+#themeToggle {
+    position: absolute;
+    top: 10%;
+    right: 10%;
+    background-color: transparent;
+    border: solid 1px #ccc;
+    cursor: pointer;
+}
+
+HTML, body {
+    height: 100vh;
+}
 /* GRID LAYOUT */
 body {
     display: grid;
     grid-template-columns: 1fr;
+    grid-template-rows: auto auto 1fr auto auto;
     grid-template-areas: 
         "nav"
         "header"
@@ -46,6 +65,7 @@ main {
     justify-content: start;
 /*     align-items: center; */
     padding: 2rem;
+    max-width: 900px;
 }
 
 /* FORM STYLING */
@@ -86,7 +106,15 @@ form {
     margin: 0; /* aligns the label to the checkboxes */
     
 }
-  
+
+/* checkbox color */
+input[type="checkbox"] {
+    accent-color: #0e4c47f8;
+}
+/* checkbox hover */
+input[type="checkbox"]:hover {
+    cursor: pointer;
+}
 
 
 #buttonSection{
@@ -180,6 +208,7 @@ aside {
     border-right: 1px solid #ddd;
     height: 100%; /* Ensure the aside spans the full height */
 }
+
 
 #listOfStoredNotes {
     list-style: none;
@@ -329,6 +358,7 @@ footer p:last-child {
 @media (min-width: 600px) {
     body {
         grid-template-columns: 1fr 2fr 1fr;
+        grid-template-rows: auto auto 1fr auto; 
         grid-template-areas: 
             "header header header"
             "nav nav nav"

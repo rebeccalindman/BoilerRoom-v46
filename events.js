@@ -58,6 +58,8 @@ export function initializeEventListeners() {
         setTimeout(() => {
             hideWarningMessage(actionWarning);  
         }, 3000);
+        //reset search
+        document.getElementById("searchInput").value = "";
     });
 
     // New Note Button Logic
@@ -68,6 +70,22 @@ export function initializeEventListeners() {
             createNewNote();
         }
         updateFormHeaderText();
+
+        //reset search
+        document.getElementById("searchInput").value = "";
+    });
+
+    // Dark mode toggle
+    document.getElementById("themeToggle").addEventListener("click", () => {
+        document.body.classList.toggle("dark-mode");
+        document.getElementById("content").classList.toggle("dark-mode");
+        document.getElementById("title").classList.toggle("dark-mode");
+        // dark mode button
+        if (document.body.classList.contains("dark-mode")) {
+            document.getElementById("themeToggle").innerText = "Light Mode";
+        } else {
+            document.getElementById("themeToggle").innerText = "Dark Mode";
+        }
     });
 
     // Delete Button Logic
@@ -81,6 +99,9 @@ export function initializeEventListeners() {
             console.log("No note selected to delete!");
         }
         updateFormHeaderText();
+
+        //reset search        
+        document.getElementById("searchInput").value = "";
     });
 
     // Search for notes
