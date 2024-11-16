@@ -19,6 +19,7 @@
     
     <nav></nav>
 
+<!-- ASIDE -->
     <aside id="menu">
         <!-- <h2>Your nest of notes</h2> -->
         <button id="sortTitleButton" type="button" class="sortButton">Sort by Title</button>
@@ -38,21 +39,29 @@
             <li class="placeholder">Create and save your first note to add it to the nest</li>
         </ul>
 
+        <!-- Delete all notes -->
         <button id="clearAllButton" type="button">Empty the nest</button>
+        
     </aside>
-    
+
+<!-- MAIN -->
     <main>
-        <!-- <h2>Note</h2> -->
+        <!-- FORM -->
+        <h2 id="formHeader">A place for your thoughts ...</h2>
+
         <form action="" id="form">
-            <section id="titleSection">
-                <input type="text" name="title" id="title" placeholder="Title">
-            </section>
-            
-            <section id="contentSection">
-                <label for="content">A place for your thoughts...</label>
-                <textarea name="content" id="content" cols="30" rows="10"></textarea>
+
+            <!-- BUTTONS -->
+            <section id="buttonSection">
+                    <div class="buttonWrapper" class="oneLine">
+                        <button id="saveButton" type="submit" class="primary">Save</button>
+                        <button id="resetButton" type="button" aria-label="New Note">New Note</button>
+                        <button id="deleteButton" type="button" aria-label="Delete current note">Delete</button>
+                    </div>
+                    <p id="actionWarning" class="hidden"></p>
             </section>
 
+            <!-- INPUTS -->
             <section class="oneLine" id="categorySection">
                 <label class="hidden">Tag</label>
                 <input type="checkbox" id="category-1" name="category" value="Personal">
@@ -62,8 +71,17 @@
                 <input type="checkbox" id="category-3" name="category" value="Study">
                 <label for="category-3">Study</label>
             </section>
+
+            <section id="titleSection">
+                <input type="text" name="title" id="title" placeholder="Title">
+            </section>
             
-            
+            <section id="contentSection">
+               <!--  <label for="content">A place for your thoughts...</label> -->
+                <textarea name="content" id="content" cols="30" rows="10"></textarea>
+            </section>
+
+            <!-- INFO -->
             
             <section class="oneLine" id="infoSection">
                 
@@ -76,32 +94,21 @@
                 
             </section>
 
-            <section id="buttonSection">
-
-                <div class="buttonWrapper">
-                    <button id="saveButton" type="submit">Save</button>
-
-                    <button id="resetButton" type="button" aria-label="New Note">New Note</button>
-
-                    <button id="deleteButton" type="button" aria-label="Delete current note">Delete</button>
-
-                </div>
-
-                <p id="actionWarning" class="hidden"></p>
-
-            </section>
+            
 
             
 
         </form>
+
     </main>
 
+<!-- FOOTER -->
     <footer>
         <p>📓 Nested your ideas yet? Don't let them fly away! 🕊️</p>
         <p>© 2024 NoteNest | Built for scribblers, dreamers, and nesters alike.</p>
     </footer>
     
-
-    <script src="script.js"></script>
+<!-- SCRIPT -->
+    <script type="module" src="./scripts.js"></script>
 </body>
 </html>

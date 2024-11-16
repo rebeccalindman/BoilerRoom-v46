@@ -50,9 +50,51 @@ main {
 
 /* FORM STYLING */
 form {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto auto auto auto auto;
+    grid-template-areas: 
+        "formHeader formHeader"
+        "categorySection buttonSection"
+        "titleSection titleSection"
+        "contentSection contentSection"
+        "infoSection infoSection";
+    align-items: center;
+    width: 100%;
+}
+
+#formHeader {
+    grid-area: formHeader;
+    display: inline;
+}
+#titleSection{
+    grid-area: titleSection;
+    width: 100%;
+}
+#contentSection{
+    grid-area: contentSection;
+    width: 100%;
+}
+#categorySection{
+    grid-area: categorySection;
+    
+}
+  
+#categorySection label{
+    margin: 0; /* aligns the label to the checkboxes */
+}
+  
+
+
+#buttonSection{
+    grid-area: buttonSection;
+    width: 100%;
     display: flex;
     flex-direction: column;
-    align-items: center;
+    align-items: end;
+}
+#infoSection{
+    grid-area: infoSection;
     width: 100%;
 }
 
@@ -64,12 +106,6 @@ form section {
 form section label {
     display: block;
     margin-bottom: 0.5rem;
-}
-
-#categorySection{
-    width: fit-content ;
-    display: inline-flex;
-    flex-direction: row;
 }
 
 form section input,
@@ -86,11 +122,32 @@ form section textarea {
 }
 
 /* BUTTON STYLING */
+#buttonWrapper {
+    display: flex;
+    flex-direction: row;
+    justify-content: end;
+    align-items: end;
+    gap: 1rem;
+}
 button {
     padding: .2rem 1rem;
     border-radius: .5rem;
     border: #ccc solid 1px;
     cursor: pointer;
+}
+
+button:hover {
+    background-color: #549993f8;
+    color: white;
+}
+
+button:active {
+    transform: scale(0.95);
+}
+.primary {
+    background-color: #0e4c47f8;
+    color: white;
+    border: none;
 }
 
 form textarea:focus-visible, form input:focus-visible, button:focus-visible {
@@ -103,12 +160,43 @@ aside {
     grid-area: aside;
     display: flex;
     flex-direction: column;
-    justify-content: start;
+    justify-content: space-between; /* Push items to top and bottom */
     align-items: center;
     background-color: #c1ab91;
     padding: 1.6rem 1rem;
     color: #333;
     border-right: 1px solid #ddd;
+    height: 100%; /* Ensure the aside spans the full height */
+}
+
+#listOfStoredNotes {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    width: 100%; /* Ensures it stretches */
+    flex-grow: 1; /* Allows the list to take up available space */
+}
+
+#clearAllButton {
+    align-self: center; /* Center the button horizontally */
+    margin-top: auto; /* Push it to the bottom of the aside */
+    border: rgba(0, 0, 0, 0.215) solid 1px;
+    background-color: transparent;
+    cursor: pointer;
+    padding: 0.5rem 1rem; /* Add more padding for better touch targets */
+    font-size: small;
+}
+
+#clearAllButton {
+    border: rgba(0, 0, 0, 0.215) solid 1px;
+    background-color: transparent;
+    cursor: pointer;
+    padding: 0.2;
+    font-size: small;
+    margin-bottom: .5rem;
+    display: inline-block;
+    margin-top: 10rem;
+
 }
 
 #filterSection {
@@ -116,7 +204,7 @@ aside {
 }
 /* SORT STYLING */
 .sortButton {
-    border: none;
+    border: rgba(0, 0, 0, 0.215) solid 1px;
     background-color: transparent;
     cursor: pointer;
     padding: 0.2;
@@ -125,14 +213,10 @@ aside {
 }
 .sortButton:hover {
     background-color: #ddb8eda2;
+    color: black;
 }
 
 /* NOTES LIST */
-#listOfStoredNotes {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-}
 
 #listOfStoredNotes li {
     padding: 0.75rem;
@@ -142,6 +226,7 @@ aside {
     border: 1px solid #ddd;
     transition: all 0.2s ease;
     cursor: pointer;
+    min-width: 16rem;
 }
 
 /* NOTES LIST HOVER EFFECT */
@@ -208,11 +293,16 @@ footer p:last-child {
     display: flex;
     flex-direction: row;
     gap: 1rem;
+    justify-content: stretch;
 }
 
 .warning {
-    border: 2px solid rgb(191, 17, 17); /* Red border for warnings */
-    background-color: #e5c2c2;
+    border: 1px solid rgb(202, 168, 168); /* Red border for warnings */
+    background-color: #e8a3a3;
+}
+.warning:hover {
+    background-color: #ea4a4a;
+    border: red;
 }
 
 /* MEDIA QUERIES FOR LARGER SCREENS */

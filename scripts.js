@@ -1,153 +1,91 @@
+// scripts.js
+import { initializeEventListeners, AUTO_SAVE_KEY, temporaryNote } from './events.js'; //todo temporarynote not needed?
+
 // Global variables
 let storedNotesArr = [];
 let editingNoteID = null;
 
 // Local storage of unsaved user input
-const AUTO_SAVE_KEY = "temporaryNote";
-
-if (!localStorage.getItem(AUTO_SAVE_KEY)) {
-    localStorage.setItem(AUTO_SAVE_KEY, JSON.stringify({ title: "", content: "" }));
-}
-
-// Fetch the existing temporary note
-let temporaryNote = JSON.parse(localStorage.getItem(AUTO_SAVE_KEY));
 
 
-// DOM Elements
-const newNoteButton = document.getElementById("resetButton");
-const saveButton = document.getElementById("saveButton");
-const deleteButton = document.getElementById("deleteButton");
-const actionWarning = document.getElementById("actionWarning");
 
-// Run when DOM loads
 document.addEventListener("DOMContentLoaded", function () {
     // Load existing notes
     loadNotes();
     getAutoSavedNote();
 
-    // interval for auto store note
+    // Set up auto-save interval
     setInterval(() => {
         storeTemporaryNote();
     }, 10000); // 10 seconds
 
-    console.log(temporaryNote);
-
-    // Save Button Logic
-    saveButton.addEventListener("click", function (event) {
-        event.preventDefault(); // Prevent form submission
-        saveCurrentNote();
-        hideWarningMessage(actionWarning);
-        console.log("Note saved!");
+    document.querySelectorAll("button").forEach((button) => {
+        saveOriginalButtonText(button); //saves the button texts on load
     });
 
-    // New Note Button Logic
-        // New Note Button Logic
-        newNoteButton.addEventListener("click", function () {
-            if (checkForEdits()) {
-                firstClickConfirmation(newNoteButton, "You have unsaved changes!", createNewNote);
-            } else {
-                createNewNote();
-            }
-        });
-
-    // Delete Button Logic
-    deleteButton.addEventListener("click", function () {
-        if (editingNoteID) {
-            firstClickConfirmation(deleteButton, "Are you sure you want to delete this note?", () => {
-                deleteNoteByID(editingNoteID);
-                createNewNote(); // Reset the form after deletion
-            });
-        } else {
-            console.log("No note selected to delete!");
-        }
-    });
-
-/*     // Sort by date
-    document.getElementById("sortButton").addEventListener("click", function () {
-        sortByDate();
-        addNoteToMenu();
-    }); */
-
-    // Sort by title
-    document.getElementById("sortTitleButton").addEventListener("click", function () {
-        sortByTitle();
-        addNoteToMenu();
-        //reset filter dropdown
-        document.getElementById("categoriesSelect").value = "all";
-    });
-
-    // Sorty by content size
-    document.getElementById("sortContentButton").addEventListener("click", function () {
-        sortByContentSize();
-        addNoteToMenu();
-        //reset filter dropdown
-        document.getElementById("categoriesSelect").value = "all";
-    });
-
-    //Filter by category
-    document.getElementById("categoriesSelect").addEventListener("change", function () {
-        const selectedCategory = this.value;
-    
-        // Display all notes if "All" is selected, otherwise filter by category
-        const filteredNotes = selectedCategory.toLowerCase() === "all" 
-            ? storedNotesArr 
-            : filterNotesByCategory(selectedCategory);
-        
-        addNoteToMenu(filteredNotes);
-    });
-    
-    
-
-    // Clear all notes
-    document.getElementById("clearAllButton").addEventListener("click", function () {
-        firstClickConfirmation(this, "Are you sure you want to clear all notes?", clearAllSavedNotes);
-    });
-    
+    // Initialize all event listeners
+    initializeEventListeners();
 });
 
+
+
+
+const TEMPORARY_NOTE_ID = "temporaryNoteID";
+const TEMPORARY_NOTE_DATE = new Date().toLocaleString();
+if (!localStorage.getItem(AUTO_SAVE_KEY)) {
+    localStorage.setItem(AUTO_SAVE_KEY, JSON.stringify({ title: "", content: "", dateAndTime: TEMPORARY_NOTE_DATE, uniqueID: TEMPORARY_NOTE_ID }));
+}
+
+// Fetch the existing temporary note
+
+
+
+
 // Functions
+let activeConfirmationButton = null;
+
 function firstClickConfirmation(button, warningMessage, onSecondClick) {
-    let readyForSecondClick = false;
+    // Check if this button is already in confirmation state
+    if (activeConfirmationButton === button) {
+        // Execute the callback on the second click
+        onSecondClick();
+        resetButtonState(button);
+        hideWarningMessage();
+        activeConfirmationButton = null; // Clear the active button
+    } else {
+        // Save the original text if not already saved
+        if (!button.dataset.originalText) {
+            saveOriginalButtonText(button);
+        }
 
-    // Display warning
-    showWarningMessage(warningMessage);
-
-    // First click
-    if (!readyForSecondClick) {
+        // Display warning
+        showWarningMessage(warningMessage);
         button.innerText = "Sure?";
         button.classList.add("warning");
-        readyForSecondClick = true;
+        activeConfirmationButton = button; // Set the active confirmation button
 
-        // Reset after timeout
-        setTimeout(() => {
-            if (readyForSecondClick) {
+        // Add a document-wide click listener to detect clicks outside the button
+        const outsideClickListener = (event) => {
+            if (!button.contains(event.target)) {
+                // Reset the button if the click is outside
                 resetButtonState(button);
                 hideWarningMessage();
-                readyForSecondClick = false;
+                activeConfirmationButton = null; // Clear the active button
+
+                // Remove the document click listener
+                document.removeEventListener("click", outsideClickListener);
             }
-        }, 3000);
+        };
+
+        document.addEventListener("click", outsideClickListener);
     }
-
-    // Second click
-    button.addEventListener(
-        "click",
-        () => {
-            if (readyForSecondClick) {
-                onSecondClick();
-                resetButtonState(button);
-                hideWarningMessage();
-                readyForSecondClick = false;
-            }
-        },
-        { once: true }
-    );
 }
+
+
 
 function filterNotesByCategory(category) {
     return storedNotesArr.filter(note => (note.categories || []).includes(category));
 }
-
-
 
 function sortByDate() {
     storedNotesArr.sort((a, b) => {
@@ -180,8 +118,10 @@ function sortByContentSize() {
 function storeTemporaryNote () {
     const TITLE = getTitle();
     const CONTENT = getContent();
+    const UNIQUE_ID = "temporaryNoteID";
+    const DATE = new Date().toLocaleString();
 
-    localStorage.setItem(AUTO_SAVE_KEY, JSON.stringify({ title: TITLE, content: CONTENT }));
+    localStorage.setItem(AUTO_SAVE_KEY, JSON.stringify({ title: TITLE, content: CONTENT, uniqueID: UNIQUE_ID, dateAndTime: DATE }));
 
 }
 
@@ -195,8 +135,17 @@ function getAutoSavedNote() {
 }
 
 function resetButtonState(button) {
-    button.innerText = button.id === "resetButton" ? "New Note" : "Delete";
+    if (button.dataset.originalText) {
+        button.innerText = button.dataset.originalText;
+    } else {
+        console.warn("Original text not found for button:", button); // error log
+    }
     button.classList.remove("warning");
+}
+
+
+function saveOriginalButtonText(button) {
+    button.dataset.originalText = button.innerText;
 }
 
 function showWarningMessage(message) {
@@ -250,15 +199,29 @@ function saveCurrentNote() {
     if (editingNoteID) {
         // Edit the existing note
         storedNote = updateNoteData();
+        if (!storedNote) {
+            console.error("Failed to update the note. No note found for editing.");
+            console.log("Stored notes:", storedNotesArr);
+            addNote();
+            createNewNote();
+            editingNoteID = true; // to keep it from creating a new note
+            addNoteToMenu();
+            
+            console.log("new note created");
+            
+            return;
+        }
     } else {
         // Create a new note
         storedNote = addNote();
-        editingNoteID = storedNote.uniqueID;
+        editingNoteID = storedNote.uniqueID; // Assign a new unique ID to the editing note
     }
 
     // Update the date and ID display
-    document.getElementById("date").innerText = storedNote.dateAndTime;
-    document.getElementById("noteID").innerText = storedNote.uniqueID;
+    if (storedNote) {
+        document.getElementById("date").innerText = storedNote.dateAndTime || "";
+        document.getElementById("noteID").innerText = storedNote.uniqueID || "";
+    }
 
     // Clear the temporary note
     localStorage.removeItem(AUTO_SAVE_KEY);
@@ -267,8 +230,8 @@ function saveCurrentNote() {
     addNoteToMenu();
 
     console.log("Stored note:", storedNote);
- 
 }
+
 
 
 function createNewNote() {
@@ -354,7 +317,7 @@ function updateNoteData() {
 
 function addNoteToMenu(notesList = storedNotesArr) { //storedNotesArr is default value if notesList is not provided
     const list = document.getElementById("listOfStoredNotes");
-    list.innerHTML = "";
+    list.innerHTML = ""; // Clears the content of the list element
 
     if (notesList.length === 0) {
         const li = document.createElement("li");
@@ -408,4 +371,32 @@ function fetchNoteByID(uniqueID) {
     
     editingNoteID = uniqueID;
 }
+
+export {
+    storedNotesArr,
+    editingNoteID,
+    saveCurrentNote,
+    createNewNote,
+    addNoteToMenu,
+    clearAllSavedNotes,
+    checkForEdits,
+    fetchNoteByID,
+    storeTemporaryNote,
+    sortByTitle,
+    sortByContentSize,
+    filterNotesByCategory,
+    deleteNoteByID,
+    loadNotes,
+    getAutoSavedNote,
+    firstClickConfirmation,
+    resetButtonState,
+    showWarningMessage,
+    hideWarningMessage,
+    updateNoteData,
+    addNote,
+    generateUniqueID,
+    getCategory,
+    getTitle,
+    getContent
+};
 
