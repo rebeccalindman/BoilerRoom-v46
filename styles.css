@@ -44,21 +44,22 @@ main {
     display: flex;
     flex-direction: column;
     justify-content: start;
-    align-items: center;
+/*     align-items: center; */
     padding: 2rem;
 }
 
 /* FORM STYLING */
 form {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    grid-template-rows: auto auto auto auto auto;
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto auto auto auto auto auto;
     grid-template-areas: 
-        "formHeader formHeader"
-        "categorySection buttonSection"
-        "titleSection titleSection"
-        "contentSection contentSection"
-        "infoSection infoSection";
+        "formHeader"
+        "buttonSection"
+        "categorySection"
+        "titleSection"
+        "contentSection"
+        "infoSection";
     align-items: center;
     width: 100%;
 }
@@ -66,6 +67,7 @@ form {
 #formHeader {
     grid-area: formHeader;
     display: inline;
+    width: 100%;
 }
 #titleSection{
     grid-area: titleSection;
@@ -77,11 +79,12 @@ form {
 }
 #categorySection{
     grid-area: categorySection;
-    
+    width: fit-content; /* keeps them together */
 }
   
 #categorySection label{
     margin: 0; /* aligns the label to the checkboxes */
+    
 }
   
 
@@ -100,7 +103,12 @@ form {
 
 form section {
     width: 100%;
-    margin: 1rem;
+    margin: .2rem;
+}
+
+#formHeader {
+    font-size: clamp(1.2rem, 2.5vw, 2rem);
+    justify-self: right;
 }
 
 form section label {
@@ -122,18 +130,21 @@ form section textarea {
 }
 
 /* BUTTON STYLING */
-#buttonWrapper {
+.buttonWrapper {
     display: flex;
-    flex-direction: row;
     justify-content: end;
     align-items: end;
     gap: 1rem;
+    flex-wrap: wrap-reverse;
 }
+
 button {
     padding: .2rem 1rem;
     border-radius: .5rem;
     border: #ccc solid 1px;
     cursor: pointer;
+    text-wrap-mode: nowrap;
+    text-wrap: nowrap;
 }
 
 button:hover {
@@ -202,6 +213,15 @@ aside {
 #filterSection {
     margin-bottom: 1rem;
 }
+
+#searchInput {
+    width: 100%;
+    padding: 0.5rem;
+    border: 1px solid #ccc;
+    border-radius: 0.5rem;
+    margin-bottom: .5rem;
+}
+
 /* SORT STYLING */
 .sortButton {
     border: rgba(0, 0, 0, 0.215) solid 1px;
@@ -291,9 +311,8 @@ footer p:last-child {
 
 .oneLine {
     display: flex;
-    flex-direction: row;
+    flex-wrap: nowrap;
     gap: 1rem;
-    justify-content: stretch;
 }
 
 .warning {
@@ -314,5 +333,16 @@ footer p:last-child {
             "nav nav nav"
             "aside main main"
             "footer footer footer";
+    }
+
+    form {
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: auto auto auto auto auto;
+        grid-template-areas: 
+        "formHeader formHeader"
+        "categorySection buttonSection"
+        "titleSection titleSection"
+        "contentSection contentSection"
+        "infoSection infoSection";
     }
 }

@@ -22,9 +22,12 @@
 <!-- ASIDE -->
     <aside id="menu">
         <!-- <h2>Your nest of notes</h2> -->
+
         <button id="sortTitleButton" type="button" class="sortButton">Sort by Title</button>
         <button id="sortContentButton" type="button" class="sortButton">Sort by Content Size</button>
 
+  
+        <!-- Filter by tag -->
         <section id="filterSection">
             <label for="categoriesSelect">Filter by tag:</label>
             <select name="category" id="categoriesSelect">
@@ -32,8 +35,11 @@
                 <option value="Personal">Personal</option>
                 <option value="Work">Work</option>
                 <option value="Study">Study</option>
-        </select>
+            </select>
         </section>
+
+         <!-- Searchbar -->
+         <input type="text" id="searchInput" placeholder="Search for a note...">
 
         <ul id="listOfStoredNotes">
             <li class="placeholder">Create and save your first note to add it to the nest</li>
@@ -47,7 +53,7 @@
 <!-- MAIN -->
     <main>
         <!-- FORM -->
-        <h2 id="formHeader">A place for your thoughts ...</h2>
+        <h2 id="formHeader">A place for your thoughts...</h2>
 
         <form action="" id="form">
 
@@ -64,11 +70,11 @@
             <!-- INPUTS -->
             <section class="oneLine" id="categorySection">
                 <label class="hidden">Tag</label>
-                <input type="checkbox" id="category-1" name="category" value="Personal">
+                    <input type="checkbox" id="category-1" name="category" value="Personal">
                 <label for="category-1">Personal</label>
-                <input type="checkbox" id="category-2" name="category" value="Work">
+                    <input type="checkbox" id="category-2" name="category" value="Work">
                 <label for="category-2">Work</label>
-                <input type="checkbox" id="category-3" name="category" value="Study">
+                    <input type="checkbox" id="category-3" name="category" value="Study">
                 <label for="category-3">Study</label>
             </section>
 
