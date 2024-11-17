@@ -1,14 +1,13 @@
 // main.js
-import { initializeEventListeners } from './events.js'; 
+import { initializeEventListeners } from './scripts/events.js'; 
 
-import { getTitle, getContent, getCategory, generateUniqueID } from './utils.js';
+import { getTitle, getContent, getCategory, generateUniqueID } from './scripts/utils.js';
 
-import { saveOriginalButtonText } from './buttonHandlers.js'; 
+import { saveOriginalButtonText } from './scripts/buttonHandlers.js'; 
 
-import { storeTemporaryNote, getAutoSavedNote, AUTO_SAVE_KEY} from './storage.js';
+import { storeTemporaryNote, getAutoSavedNote, AUTO_SAVE_KEY, loadNotes, storedNotesArr} from './scripts/storage.js';
 
 // Global variables
-let storedNotesArr = [];
 let editingNoteID = null;
 
 
@@ -39,17 +38,7 @@ function updateFormHeaderText(){
     }
 }
 
-function loadNotes() { // Load all stored notes into array and post them to the menu
-    storedNotesArr = JSON.parse(localStorage.getItem("storedNotesArr")) || [];
-    Object.keys(localStorage).forEach(key => {
-        if (key !== "storedNotesArr") {
-            storedNotesArr.push(JSON.parse(localStorage.getItem(key)));
-        }
-    });
-    storedNotesArr.forEach(note => {
-        addNoteToMenu();
-    });
-}
+
 
 function checkForEdits() {
     const inputTitle = getTitle();
@@ -140,12 +129,7 @@ function addNote() {
     return note;
 }
 
-function deleteNoteByID(uniqueID) {
-    localStorage.removeItem(uniqueID);
-    storedNotesArr = storedNotesArr.filter(note => note.uniqueID !== uniqueID);
-    addNoteToMenu();
-    console.log("Deleted note:", uniqueID);
-}
+
 
 function fetchNoteByID(uniqueID) {
     const note = storedNotesArr.find(note => note.uniqueID === uniqueID); // find the associated note
@@ -199,10 +183,16 @@ function addNoteToMenu(notesList = storedNotesArr) { //storedNotesArr is default
     // Filter out the temporary note
     const filteredNotes = notesList.filter(note => note.uniqueID !== "temporaryNoteID");
 
-    if (filteredNotes.length === 0) {
+    if (filteredNotes.length === 0 && storedNotesArr.length > 0 ) {
         const li = document.createElement("li");
         li.classList.add("placeholder");
-        li.innerText = "No notes found for the selected category.";
+        li.innerText = "No notes found that match the selected category.";
+        list.appendChild(li);
+        return;
+    } else if (notesList.length === 0) {
+        const li = document.createElement("li");
+        li.classList.add("placeholder");
+        li.innerText = "Create and save your first note to add it to the nest";
         list.appendChild(li);
         return;
     }
@@ -226,15 +216,12 @@ function addNoteToMenu(notesList = storedNotesArr) { //storedNotesArr is default
 
 
 export {
-    storedNotesArr,
     editingNoteID,
     saveCurrentNote,
     createNewNote,
     addNoteToMenu,
     checkForEdits,
     fetchNoteByID,
-    deleteNoteByID,
-    loadNotes,
     updateNoteData,
     addNote,
     updateFormHeaderText

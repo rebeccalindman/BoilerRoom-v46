@@ -1,6 +1,6 @@
 // sorting.js
 
-import {storedNotesArr} from './main.js';
+import {storedNotesArr} from './storage.js';
 
 function filterNotesByCategory(category) {
     return storedNotesArr.filter(note => (note.categories || []).includes(category));

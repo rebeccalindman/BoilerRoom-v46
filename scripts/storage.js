@@ -1,7 +1,9 @@
 // storage.js
 
-import {addNoteToMenu} from './main.js';
+import {addNoteToMenu} from '../main.js';
 import { getTitle, getContent } from './utils.js';
+
+let storedNotesArr = [];
 
 // Local storage of unsaved user input
 export const AUTO_SAVE_KEY = "temporaryNote";
@@ -41,4 +43,23 @@ function clearAllSavedNotes() {
     addNoteToMenu();
 }
 
-export { storeTemporaryNote, getAutoSavedNote, clearAllSavedNotes} 
+function loadNotes() { // Load all stored notes into array and post them to the menu
+    storedNotesArr = JSON.parse(localStorage.getItem("storedNotesArr")) || [];
+    Object.keys(localStorage).forEach(key => {
+        if (key !== "storedNotesArr") {
+            storedNotesArr.push(JSON.parse(localStorage.getItem(key)));
+        }
+    });
+    storedNotesArr.forEach(note => {
+        addNoteToMenu();
+    });
+}
+
+function deleteNoteByID(uniqueID) {
+    localStorage.removeItem(uniqueID);
+    storedNotesArr = storedNotesArr.filter(note => note.uniqueID !== uniqueID);
+    addNoteToMenu();
+    console.log("Deleted note:", uniqueID);
+}
+
+export { storeTemporaryNote, getAutoSavedNote, clearAllSavedNotes, loadNotes, deleteNoteByID, storedNotesArr} 

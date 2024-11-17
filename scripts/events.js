@@ -1,19 +1,17 @@
 // events.js
 import { 
-    storedNotesArr,
     saveCurrentNote, 
     createNewNote, 
-    deleteNoteByID, 
     addNoteToMenu, 
     checkForEdits, 
     editingNoteID,
     updateFormHeaderText
-} from './main.js';
+} from '../main.js';
 
 import { getContent } from './utils.js';
 import { sortByTitle, sortByContentSize, filterNotesByCategory } from './sorting.js';
 import { firstClickConfirmation, showWarningMessage, hideWarningMessage } from './buttonHandlers.js'; 
-import { clearAllSavedNotes } from './storage.js';
+import { clearAllSavedNotes, storedNotesArr, deleteNoteByID } from './storage.js';
 
 
 

@@ -1,7 +1,5 @@
 // buttonHandlers.js
 
-// Fetch the existing temporary note
-
 // Functions
 let activeConfirmationButton = null;
 
