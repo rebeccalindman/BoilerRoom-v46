@@ -6,19 +6,15 @@
     box-sizing: border-box;
 }
 
-
-.dark-mode {
-    background-color: #333;
-    color: #fff;
-}
-
 #themeToggle {
     position: absolute;
-    top: 10%;
-    right: 10%;
+    top: 10vh;
+    right: 5vw;
     background-color: transparent;
     border: solid 1px #ccc;
     cursor: pointer;
+    color: #000;
+
 }
 
 HTML, body {
@@ -65,7 +61,7 @@ main {
     justify-content: start;
 /*     align-items: center; */
     padding: 2rem;
-    max-width: 900px;
+    max-width: 100vw;
 }
 
 /* FORM STYLING */
@@ -174,6 +170,7 @@ button {
     cursor: pointer;
     text-wrap-mode: nowrap;
     text-wrap: nowrap;
+    color: #000;
 }
 
 button:hover {
@@ -354,6 +351,78 @@ footer p:last-child {
     border: red;
 }
 
+
+/* DARK MODE */
+/* General dark mode styles */
+.dark-mode {
+    background-color: #333;
+    color: #fff;
+}
+
+/* Ensure input fields are visible in dark mode */
+.dark-mode input[type="text"],
+.dark-mode textarea {
+    background-color: #555; /* Darker background for inputs */
+    color: #fff; /* Light text color for visibility */
+    border: 1px solid #ccc; /* Optional: border for better contrast */
+}
+
+.dark-mode input[type="text"]::placeholder,
+.dark-mode textarea::placeholder {
+    color: #bbb; /* Lighter placeholder text for better readability */
+}
+
+/* Ensure buttons adapt to dark mode */
+.dark-mode button {
+    color: #fff; /* Light text */
+    background-color: #444; /* Dark button background */
+    border: 1px solid #ccc; /* Border for better contrast */
+}
+
+.dark-mode button:hover {
+    background-color: #666; /* Lighter hover background */
+    color: #fff; /* Keep text light */
+}
+
+.dark-mode aside {
+    background-color: #897164e2;
+    color: #fff;
+}
+
+.dark-mode #listOfStoredNotes li {
+    background-color: #333;
+    color: #fff;
+    border: 1px solid #555;
+}
+
+.dark-mode #listOfStoredNotes li:hover {
+    background-color: #555;
+    color: #fff;
+}
+
+.dark-mode #categoryText {
+    color: #ffffff;
+}
+
+/* Fix for category labels in dark mode */
+.dark-mode #categorySection label {
+    color: #fff; /* Make category text white */
+}
+
+/* Fix for the theme toggle button in dark mode */
+.dark-mode #themeToggle {
+    color: #fff; /* Ensure text is white */
+    background-color: #444; /* Match other dark mode buttons */
+    border: 1px solid #ccc;
+}
+
+.dark-mode #themeToggle:hover {
+    background-color: #666;
+    color: #fff;
+}
+
+
+
 /* MEDIA QUERIES FOR LARGER SCREENS */
 @media (min-width: 600px) {
     body {
@@ -364,6 +433,9 @@ footer p:last-child {
             "nav nav nav"
             "aside main main"
             "footer footer footer";
+    }
+    main {
+        max-width: clamp(100px, 70vw, 1200px);
     }
 
     form {

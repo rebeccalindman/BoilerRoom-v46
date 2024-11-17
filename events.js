@@ -80,11 +80,12 @@ export function initializeEventListeners() {
         document.body.classList.toggle("dark-mode");
         document.getElementById("content").classList.toggle("dark-mode");
         document.getElementById("title").classList.toggle("dark-mode");
+        document.getElementById("themeToggle").classList.toggle("dark-mode");
         // dark mode button
         if (document.body.classList.contains("dark-mode")) {
-            document.getElementById("themeToggle").innerText = "Light Mode";
+            document.getElementById("themeToggle").innerText = "Light Mode 🌝";
         } else {
-            document.getElementById("themeToggle").innerText = "Dark Mode";
+            document.getElementById("themeToggle").innerText = "Dark Mode 🌚";
         }
     });
 
@@ -117,8 +118,15 @@ export function initializeEventListeners() {
     });
 
     // Sort by title
+    let isSortedByTitle = false;
     document.getElementById("sortTitleButton").addEventListener("click", function () {
-        sortByTitle();
+        if (isSortedByTitle) {
+            storedNotesArr.reverse();
+            isSortedByTitle = false;
+        } else {
+            sortByTitle();
+            isSortedByTitle = true;
+        }
         addNoteToMenu();
         // Reset filter dropdown
         document.getElementById("categoriesSelect").value = "all";
@@ -127,8 +135,15 @@ export function initializeEventListeners() {
     });
 
     // Sort by content size
+    let isSortedByContentSize = false;
     document.getElementById("sortContentButton").addEventListener("click", function () {
-        sortByContentSize();
+        if (isSortedByContentSize) {
+            storedNotesArr.reverse();
+            isSortedByContentSize = false;
+        } else {
+            sortByContentSize();
+            isSortedByContentSize = true;
+        }
         addNoteToMenu();
         // Reset filter dropdown
         document.getElementById("categoriesSelect").value = "all";

@@ -328,7 +328,7 @@ function addNoteToMenu(notesList = storedNotesArr) { //storedNotesArr is default
         const li = document.createElement("li");
         const categoriesText = note.categories ? note.categories.join(", ") : "No Tags";
         li.innerHTML = `
-            <p style="font-size: 0.8rem; color: #555;"># ${categoriesText}</p>
+            <p id="categoryText" style="font-size: 0.8rem; color: #555;"># ${categoriesText}</p>
             <h4>${note.title || "Untitled Note"}</h4>
             <p>${note.content.substring(0, 40) || "No content..."}</p>
             <p style="font-size: 0.8rem; font-style: italic;">${note.dateAndTime}</p>
