@@ -22,7 +22,7 @@ import {
     editingNoteID,
     storedNotesArr,
     updateFormHeaderText
-} from './scripts.js';
+} from './main.js';
 
 export const AUTO_SAVE_KEY = "temporaryNote";
 export let temporaryNote = JSON.parse(localStorage.getItem(AUTO_SAVE_KEY)); //todo not needed?
