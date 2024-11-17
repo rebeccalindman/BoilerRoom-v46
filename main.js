@@ -161,7 +161,7 @@ function fetchNoteByID(uniqueID) {
         checkbox.checked = false;
     });
 
-    // !Check only the categories associated with the note
+    // Check only the categories associated with the note when fetching
     if (note.categories) {
         note.categories.forEach(category => {
             const checkbox = document.querySelector(`input[name="category"][value="${category}"]`);

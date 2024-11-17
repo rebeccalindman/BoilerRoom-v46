@@ -168,7 +168,6 @@ button {
     border-radius: .5rem;
     border: #ccc solid 1px;
     cursor: pointer;
-    text-wrap-mode: nowrap;
     text-wrap: nowrap;
     color: #000;
 }
@@ -216,25 +215,14 @@ aside {
 }
 
 #clearAllButton {
-    align-self: center; /* Center the button horizontally */
-    margin-top: auto; /* Push it to the bottom of the aside */
     border: rgba(0, 0, 0, 0.215) solid 1px;
     background-color: transparent;
     cursor: pointer;
-    padding: 0.5rem 1rem; /* Add more padding for better touch targets */
-    font-size: small;
-}
-
-#clearAllButton {
-    border: rgba(0, 0, 0, 0.215) solid 1px;
-    background-color: transparent;
-    cursor: pointer;
-    padding: 0.2;
+    padding: 0.5rem 1rem;
     font-size: small;
     margin-bottom: .5rem;
     display: inline-block;
     margin-top: 10rem;
-
 }
 
 #filterSection {
@@ -254,7 +242,7 @@ aside {
     border: rgba(0, 0, 0, 0.215) solid 1px;
     background-color: transparent;
     cursor: pointer;
-    padding: 0.2;
+    padding: 0.2rem 0.5rem;
     font-size: small;
     margin-bottom: .5rem;
 }
@@ -353,36 +341,33 @@ footer p:last-child {
 
 
 /* DARK MODE */
+
 /* General dark mode styles */
 .dark-mode {
     background-color: #333;
     color: #fff;
 }
 
-/* Ensure input fields are visible in dark mode */
 .dark-mode input[type="text"],
-.dark-mode textarea {
-    background-color: #555; /* Darker background for inputs */
-    color: #fff; /* Light text color for visibility */
-    border: 1px solid #ccc; /* Optional: border for better contrast */
-}
-
-.dark-mode input[type="text"]::placeholder,
-.dark-mode textarea::placeholder {
-    color: #bbb; /* Lighter placeholder text for better readability */
-}
-
-/* Ensure buttons adapt to dark mode */
+.dark-mode textarea,
 .dark-mode button {
-    color: #fff; /* Light text */
-    background-color: #444; /* Dark button background */
-    border: 1px solid #ccc; /* Border for better contrast */
+    background-color: #555;
+    color: #fff;
+    border: 1px solid #ccc;
 }
 
-.dark-mode button:hover {
-    background-color: #666; /* Lighter hover background */
-    color: #fff; /* Keep text light */
+.dark-mode button,
+.dark-mode #themeToggle {
+    color: #fff;
+    background-color: #444;
+    border: 1px solid #ccc;
 }
+.dark-mode button:hover,
+.dark-mode #themeToggle:hover {
+    background-color: #666;
+    color: #fff;
+}
+
 
 .dark-mode aside {
     background-color: #897164e2;
@@ -400,26 +385,6 @@ footer p:last-child {
     color: #fff;
 }
 
-.dark-mode #categoryText {
-    color: #ffffff;
-}
-
-/* Fix for category labels in dark mode */
-.dark-mode #categorySection label {
-    color: #fff; /* Make category text white */
-}
-
-/* Fix for the theme toggle button in dark mode */
-.dark-mode #themeToggle {
-    color: #fff; /* Ensure text is white */
-    background-color: #444; /* Match other dark mode buttons */
-    border: 1px solid #ccc;
-}
-
-.dark-mode #themeToggle:hover {
-    background-color: #666;
-    color: #fff;
-}
 
 
 
