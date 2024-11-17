@@ -6,7 +6,7 @@ import { getTitle, getContent } from './utils.js';
 let storedNotesArr = [];
 
 // Local storage of unsaved user input
-export const AUTO_SAVE_KEY = "temporaryNote";
+const AUTO_SAVE_KEY = "temporaryNote";
 /* export let temporaryNote = JSON.parse(localStorage.getItem(AUTO_SAVE_KEY)); //? not needed? */
 
 const TEMPORARY_NOTE_ID = "temporaryNoteID"; 
@@ -62,4 +62,4 @@ function deleteNoteByID(uniqueID) {
     console.log("Deleted note:", uniqueID);
 }
 
-export { storeTemporaryNote, getAutoSavedNote, clearAllSavedNotes, loadNotes, deleteNoteByID, storedNotesArr} 
+export { storeTemporaryNote, getAutoSavedNote, clearAllSavedNotes, loadNotes, deleteNoteByID, storedNotesArr, AUTO_SAVE_KEY } 
