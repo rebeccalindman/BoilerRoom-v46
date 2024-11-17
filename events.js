@@ -1,31 +1,21 @@
 // events.js
 import { 
+    storedNotesArr,
     saveCurrentNote, 
     createNewNote, 
     deleteNoteByID, 
     addNoteToMenu, 
-    clearAllSavedNotes, 
     checkForEdits, 
-    firstClickConfirmation, 
-    resetButtonState, 
-    showWarningMessage, 
-    hideWarningMessage, 
-    updateNoteData, 
-    addNote, 
-    generateUniqueID, 
-    getCategory, 
-    getTitle, 
-    getContent, 
-    sortByTitle, 
-    sortByContentSize, 
-    filterNotesByCategory,
     editingNoteID,
-    storedNotesArr,
     updateFormHeaderText
 } from './main.js';
 
-export const AUTO_SAVE_KEY = "temporaryNote";
-export let temporaryNote = JSON.parse(localStorage.getItem(AUTO_SAVE_KEY)); //todo not needed?
+import { getContent } from './utils.js';
+import { sortByTitle, sortByContentSize, filterNotesByCategory } from './sorting.js';
+import { firstClickConfirmation, showWarningMessage, hideWarningMessage } from './buttonHandlers.js'; 
+import { clearAllSavedNotes } from './storage.js';
+
+
 
 
 // Function to initialize all event listeners
