@@ -17,7 +17,7 @@ T.ex. fler små utilities och tydligare avgränsning mellan utilities/UI/data.
 Bad min sambo att klicka runt lite och det kom fram flera förbättringsområden som var relativt enkla att åtgärda.
 - Placering av knappar 
 - Empty Nest skapade en bugg med save och new note funktionerna
-- Otryliga sorteringsknappar
+- Otydliga sorteringsknappar
 - Okonventionellt med timer på "bekräftande", bytt till att klicka utanför knappen
 - Önskvärt med hover på knappar
 
