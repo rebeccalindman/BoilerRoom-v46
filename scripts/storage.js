@@ -22,17 +22,25 @@ function storeTemporaryNote () {
     const UNIQUE_ID = TEMPORARY_NOTE_ID;
     const DATE = new Date().toLocaleString();
 
-    localStorage.setItem(AUTO_SAVE_KEY, JSON.stringify({ title: TITLE, content: CONTENT, uniqueID: UNIQUE_ID, dateAndTime: DATE }));
+    try {
+        localStorage.setItem(AUTO_SAVE_KEY, JSON.stringify({ title: TITLE, content: CONTENT, uniqueID: UNIQUE_ID, dateAndTime: DATE }));
+    } catch (error) {
+        console.error("Error storing temporary note:", error);
+    }
 
 }
 
 
 function getAutoSavedNote() {
-    const savedNote = JSON.parse(localStorage.getItem(AUTO_SAVE_KEY));
-    if (savedNote) {
-        // Populate the form fields with the saved values
-        document.getElementById("title").value = savedNote.title || "";
-        document.getElementById("content").value = savedNote.content || "";
+    try {
+        const savedNote = JSON.parse(localStorage.getItem(AUTO_SAVE_KEY));
+        if (savedNote) {
+            // Populate the form fields with the saved values
+            document.getElementById("title").value = savedNote.title || "";
+            document.getElementById("content").value = savedNote.content || "";
+        }
+    } catch (error) {
+        console.error("Error parsing auto-saved note:", error);
     }
 }
 
@@ -44,15 +52,19 @@ function clearAllSavedNotes() {
 }
 
 function loadNotes() { // Load all stored notes into array and post them to the menu
-    storedNotesArr = JSON.parse(localStorage.getItem("storedNotesArr")) || [];
+    storedNotesArr = [];
     Object.keys(localStorage).forEach(key => {
         if (key !== "storedNotesArr") {
-            storedNotesArr.push(JSON.parse(localStorage.getItem(key)));
+            try {
+                const note = JSON.parse(localStorage.getItem(key));
+                storedNotesArr.push(note);
+            } catch (error) {
+                console.error(`Error parsing note with key ${key}:`, error);
+            }
         }
-    });
-    storedNotesArr.forEach(note => {
         addNoteToMenu();
     });
+    
 }
 
 function deleteNoteByID(uniqueID) {
@@ -63,3 +75,4 @@ function deleteNoteByID(uniqueID) {
 }
 
 export { storeTemporaryNote, getAutoSavedNote, clearAllSavedNotes, loadNotes, deleteNoteByID, storedNotesArr, AUTO_SAVE_KEY } 
+
